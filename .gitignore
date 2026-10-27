@@ -1,0 +1,33 @@
+/build/
+/dist/
+/vendor/
+/evidence/
+# Local execution records refer to the unpublished research workspace.
+/docs/implementation-plan.md
+/docs/progress.md
+__pycache__/
+*.py[cod]
+.DS_Store
+# Audio, model data and generated application packages stay local.
+*.wav
+*.WAV
+*.aif
+*.aiff
+*.flac
+*.mp3
+*.m4a
+*.onnx
+*.bin
+*.npz
+*.npy
+*.dylib
+*.app/
+*.zip
+*.tgz
+*.tar.gz
+*.log
+.env
+.env.*
+!.env.example
+*.pem
+*.key
