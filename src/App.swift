@@ -12,7 +12,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var controller = JobController()
     var body: some Scene {
-        WindowGroup("Separador de diálogo") {
+        WindowGroup("Cauces") {
             MainView(controller: controller)
                 .onAppear { delegate.shutdown = { controller.shutdown() } }
         }
@@ -31,7 +31,7 @@ struct MainView: View {
         VStack(alignment: .leading, spacing: 22) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Separador de diálogo").font(.largeTitle.bold())
+                    Text("Cauces").font(.largeTitle.bold())
                     Text("Dos voces · Residual · Procesamiento local").foregroundStyle(.secondary)
                 }
                 Spacer()

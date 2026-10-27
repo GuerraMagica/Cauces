@@ -4,11 +4,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT=Path(__file__).resolve().parents[1]
-INV=ROOT.parent/'voxuno-investigation'
-sys.path.insert(0,str(INV))
-from oracle.wav_io import read_wav
-from oracle.run_app_differential import VALID, compare_arrays
-MODELS=Path('/Library/Application Support/VoxUno/Models/5d6702c37dfb17e5eebe55213eb4f0b22da81bf00ee506257d44107cf3b34195')
+from fixture_support import FIXTURES, MODELS, read_wav, VALID, compare_arrays
 
 def main():
     arch=os.environ.get('DS_TEST_ARCH','arm64')
@@ -22,12 +18,12 @@ def main():
     with (destination/'divergences.csv').open('w') as f:
         writer=csv.writer(f);writer.writerow(['case','stem','channel','sample','original','native','absolute_error'])
         for name in sys.argv[1:] or VALID:
-            source=INV/'fixtures'/f'{name}.wav';before=(source.stat().st_mtime_ns,hashlib.sha256(source.read_bytes()).hexdigest())
+            source=FIXTURES/f'{name}.wav';before=(source.stat().st_mtime_ns,hashlib.sha256(source.read_bytes()).hexdigest())
             proc=subprocess.run([str(binary),str(MODELS),str(source),str(destination/name),'4'],capture_output=True,text=True)
             if proc.returncode: raise AssertionError(f'{name}: {proc.stderr}')
             case={'case':name,'timing':proc.stdout.strip(),'stems':{}}
             for stem in ('speaker_1','speaker_2','noise'):
-                original,rate=read_wav(INV/'fixtures'/f'{name}_{stem}.wav')
+                original,rate=read_wav(FIXTURES/f'{name}_{stem}.wav')
                 native,nrate=read_wav(destination/name/f'{stem}.wav')
                 comparison=compare_arrays(original,native);comparison['rate_match']=rate==nrate;case['stems'][stem]=comparison
                 if original.shape==native.shape:

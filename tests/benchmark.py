@@ -6,7 +6,7 @@ import hashlib,json,resource,struct,subprocess,tempfile,time
 from pathlib import Path
 import numpy as np
 ROOT=Path(__file__).resolve().parents[1]
-MODELS=ROOT/'dist/Separador de diálogo.app/Contents/Resources/Models'
+from fixture_support import MODELS
 from worker_test import request
 
 def wav(path,seconds,silent=False):

@@ -3,8 +3,7 @@ import hashlib,json,os,select,subprocess,tempfile,time
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-INV=ROOT.parent/'voxuno-investigation'
-MODELS='/Library/Application Support/VoxUno/Models/5d6702c37dfb17e5eebe55213eb4f0b22da81bf00ee506257d44107cf3b34195'
+from local_paths import FIXTURES, MODELS
 
 def request(proc,message):
     if message.get('cmd')=='export' and 'staging' not in message:
@@ -21,11 +20,11 @@ def main():
     binary=ROOT/'build/arm64/dialogue-worker'
     assert binary.exists(),'Worker executable is missing'
     with tempfile.TemporaryDirectory(prefix='dialogue-worker-test-') as tmp:
-        p=subprocess.Popen([str(binary),'--models',MODELS],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+        p=subprocess.Popen([str(binary),'--models',str(MODELS)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
         try:
             assert json.loads(p.stdout.readline())['type']=='ready'
             ev,_=request(p,{'cmd':'nonsense','id':1});assert ev['type']=='error'
-            source=INV/'fixtures/signed_zero.wav'
+            source=FIXTURES/'signed_zero.wav'
             before=(hashlib.sha256(source.read_bytes()).hexdigest(),source.stat().st_mtime_ns)
             ev,_=request(p,{'cmd':'inspect','source':str(source),'id':2});assert ev['type']=='info' and ev['frames']>0
             ev,_=request(p,{'cmd':'separate','source':str(source),'workspace':tmp,'id':3});assert ev['type']=='result',ev
@@ -37,7 +36,7 @@ def main():
             assert hashes=={f.name:hashlib.sha256(f.read_bytes()).hexdigest() for f in target.iterdir()}
             assert before==(hashlib.sha256(source.read_bytes()).hexdigest(),source.stat().st_mtime_ns)
             for name in ('malformed','empty_48k','nan_float','inf_float','stereo_16k','three_channels','rate_96k','nan_then_stereo','stereo_then_nan'):
-                ev,_=request(p,{'cmd':'separate','source':str(INV/'fixtures'/f'{name}.wav'),'workspace':tmp,'id':6})
+                ev,_=request(p,{'cmd':'separate','source':str(FIXTURES/f'{name}.wav'),'workspace':tmp,'id':6})
                 assert ev['type']=='error',(name,ev)
             ev,_=request(p,{'cmd':'inspect','source':str(source),'id':7});assert ev['type']=='info'
             assert not list(Path(tmp).glob('.export-*')),'left an export staging directory'

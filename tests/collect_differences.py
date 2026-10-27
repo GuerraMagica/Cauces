@@ -3,16 +3,14 @@ from pathlib import Path
 import hashlib,json,sys
 import numpy as np
 ROOT=Path(__file__).resolve().parents[1]
-INV=ROOT.parent/'voxuno-investigation'
-sys.path.insert(0,str(INV))
-from oracle.wav_io import read_wav
+from fixture_support import FIXTURES, MODELS, read_wav, VALID, compare_arrays
 
 def collect(directory):
     directory=Path(directory);report=json.loads((directory/'results.json').read_text());manifest=[]
     for case in report['cases']:
         name=case['case']
         for stem in ('speaker_1','speaker_2','noise'):
-            original_path=INV/'fixtures'/f'{name}_{stem}.wav';native_path=directory/name/f'{stem}.wav'
+            original_path=FIXTURES/f'{name}_{stem}.wav';native_path=directory/name/f'{stem}.wav'
             original,rate=read_wav(original_path);native,nrate=read_wav(native_path)
             bits=original.view(np.uint32)!=native.view(np.uint32)
             outside=np.abs(original.astype(np.float64)-native.astype(np.float64))>1e-5+1e-4*np.abs(original.astype(np.float64))

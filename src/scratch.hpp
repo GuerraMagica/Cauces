@@ -1,5 +1,6 @@
 #pragma once
 #include "pipeline.hpp"
+#include "security.h"
 #include <filesystem>
 #include <cstdint>
 namespace ds {
@@ -7,6 +8,7 @@ struct WavInfo;
 uint64_t required_working_space(const WavInfo& info);
 class ScratchSpace {
     std::filesystem::path root;
+    cauces_directory* owned=nullptr;
 public:
     explicit ScratchSpace(const std::filesystem::path& parent);
     ~ScratchSpace();

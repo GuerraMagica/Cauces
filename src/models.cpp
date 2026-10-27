@@ -1,4 +1,5 @@
 #include "models.hpp"
+#include "model_assets.hpp"
 #include <onnxruntime_cxx_api.h>
 #include <array>
 #include <cmath>
@@ -7,12 +8,13 @@
 
 namespace ds {
 struct Models::Impl {
-    Ort::Env env{ORT_LOGGING_LEVEL_WARNING, "DialogueSeparator"};
+    ModelAssets assets;
+    Ort::Env env{ORT_LOGGING_LEVEL_WARNING, "Cauces"};
     Ort::SessionOptions options;
     Ort::Session separator{nullptr}, refiner{nullptr};
     Ort::MemoryInfo memory = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
 
-    Impl(const std::string& directory, int threads) {
+    Impl(const std::string& directory, int threads):assets(directory) {
         if (threads < 1 || threads > 64) throw std::invalid_argument("Número de hilos inválido.");
         env.DisableTelemetryEvents();
         options.SetIntraOpNumThreads(threads);
@@ -20,9 +22,10 @@ struct Models::Impl {
         options.SetExecutionMode(ExecutionMode::ORT_SEQUENTIAL);
         options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
         options.AddConfigEntry("session.intra_op.allow_spinning", "0");
-        auto root = std::filesystem::path(directory);
-        separator = Ort::Session(env, (root / "separator.onnx").c_str(), options);
-        refiner = Ort::Session(env, (root / "refiner.onnx").c_str(), options);
+        options.AddExternalInitializersFromFilesInMemory({"weights.bin"},{assets.weights.data()},{assets.weights.size()});
+        // Sessions consume the very bytes whose hashes were verified, without reopening paths.
+        separator = Ort::Session(env,assets.separator.data(),assets.separator.size(),options);
+        refiner = Ort::Session(env,assets.refiner.data(),assets.refiner.size(),options);
     }
     Ort::Value tensor(const std::vector<float>& v, const std::vector<int64_t>& shape) {
         // Run receives these buffers as immutable model inputs.

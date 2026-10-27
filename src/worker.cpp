@@ -1,6 +1,7 @@
 #include "pipeline.hpp"
 #include "scratch.hpp"
 #include "wav.hpp"
+#include "security.h"
 #include <nlohmann/json.hpp>
 #include <CommonCrypto/CommonDigest.h>
 #include <array>
@@ -18,19 +19,13 @@ using json=nlohmann::json;
 namespace {
 void emit(const json& event){std::cout<<event.dump()<<'\n'<<std::flush;}
 std::string digest(const fs::path& path){
-    std::ifstream file(path,std::ios::binary);if(!file)throw std::runtime_error("No se puede leer un archivo para verificar su integridad.");
-    CC_SHA256_CTX ctx;CC_SHA256_Init(&ctx);std::array<char,65536> block{};
-    while(file){file.read(block.data(),block.size());auto count=file.gcount();if(count>0)CC_SHA256_Update(&ctx,block.data(),CC_LONG(count));}
-    if(!file.eof())throw std::runtime_error("Fallo de lectura al verificar integridad.");
+    int fd=::open(path.c_str(),O_RDONLY|O_NONBLOCK|O_NOFOLLOW|O_CLOEXEC);struct stat st{};
+    if(fd<0||::fstat(fd,&st)||!S_ISREG(st.st_mode)||st.st_size<0||st.st_size>1024LL*1024*1024){if(fd>=0)::close(fd);throw std::runtime_error("No se puede verificar un archivo regular de hasta 1 GiB.");}
+    CC_SHA256_CTX ctx;CC_SHA256_Init(&ctx);std::array<char,65536> block{};off_t total=0;
+    for(;;){auto n=::read(fd,block.data(),block.size());if(n<0&&errno==EINTR)continue;if(n<0||n>st.st_size-total){::close(fd);throw std::runtime_error("Fallo de lectura o archivo cambiado durante verificación.");}if(!n)break;total+=n;CC_SHA256_Update(&ctx,block.data(),CC_LONG(n));}
+    ::close(fd);if(total!=st.st_size)throw std::runtime_error("Archivo cambiado durante verificación.");
     unsigned char bytes[CC_SHA256_DIGEST_LENGTH];CC_SHA256_Final(bytes,&ctx);
     std::ostringstream out;out<<std::hex<<std::setfill('0');for(auto b:bytes)out<<std::setw(2)<<int(b);return out.str();
-}
-void verify_models(const fs::path& root){
-    const std::pair<const char*,const char*> expected[]{
-        {"separator.onnx","ac763dcb1010ea8a23103ee799ceb61f394e91bd7a8280e1ef34d3f710ea5a82"},
-        {"refiner.onnx","4d4d38f4ca538924118b79daf5e24f293fec6f04e5a6eca2aa36e04c8f23f9cb"},
-        {"weights.bin","b1491a04c97baaa30ebecfc7290fc70daa9404774ace4495065f5243b4188889"}};
-    for(const auto& item:expected)if(digest(root/item.first)!=item.second)throw std::runtime_error("La copia local del modelo está dañada; vuelve a copiar la app completa.");
 }
 json info_json(const ds::WavInfo& info){
     json out{{"rate",info.rate},{"channels",info.channels},{"frames",info.frames},{"bits",info.bits},{"duration",double(info.frames)/info.rate}};
@@ -51,7 +46,10 @@ fs::path export_result(const std::array<fs::path,3>& stems,const fs::path& desti
        fs::canonical(staging.parent_path())!=fs::canonical(destination)||!fs::is_empty(staging)||
        ::lstat(staging.c_str(),&st)||st.st_uid!=::getuid()||(st.st_mode&077)!=0)
         throw std::runtime_error("El temporal de exportación no es una carpeta privada válida.");
-    try{
+    char diagnostic[512]{};
+    std::unique_ptr<cauces_directory,decltype(&cauces_directory_destroy)> owned(cauces_directory_adopt(staging.c_str(),diagnostic,sizeof(diagnostic)),cauces_directory_destroy);
+    if(!owned)throw std::runtime_error(diagnostic);
+    {
         auto target=destination/(name+"_separado");
         if(fs::exists(fs::symlink_status(target)))throw std::runtime_error("Ya existe una exportación con ese nombre. Elige otra carpeta.");
         uint64_t required=16*1024*1024;
@@ -59,28 +57,54 @@ fs::path export_result(const std::array<fs::path,3>& stems,const fs::path& desti
         if(fs::space(destination).available<required)throw std::runtime_error("No hay espacio suficiente para exportar los tres stems.");
         const char* labels[]{"voz_1","voz_2","residual"};
         for(size_t i=0;i<3;++i){
-            auto out=staging/(name+"_"+labels[i]+".wav");fs::copy_file(stems[i],out,fs::copy_options::none);
-            int fd=::open(out.c_str(),O_RDONLY|O_NOFOLLOW);if(fd<0)throw std::runtime_error("No se puede verificar la exportación.");
-            int synced=::fsync(fd);::close(fd);if(synced)throw std::runtime_error("No se puede finalizar la exportación.");
-            ds::inspect_wav(out);if(digest(stems[i])!=digest(out))throw std::runtime_error("La copia de un stem no coincide con su origen.");
+            std::string filename=name+"_"+labels[i]+".wav";
+            if(cauces_directory_copy(owned.get(),stems[i].c_str(),filename.c_str(),diagnostic,sizeof(diagnostic)))throw std::runtime_error(diagnostic);
         }
-        if(::renameatx_np(AT_FDCWD,staging.c_str(),AT_FDCWD,target.c_str(),RENAME_EXCL))throw std::runtime_error("No se puede publicar la exportación; el destino puede existir ya.");
+        if(cauces_directory_publish(owned.get(),(name+"_separado").c_str(),diagnostic,sizeof(diagnostic)))throw std::runtime_error(diagnostic);
         return target;
-    }catch(...){std::error_code ec;fs::remove_all(staging,ec);throw;}
+    }
 }
+}
+// Read and discard oversized lines without ever buffering beyond the protocol cap.
+bool read_command(std::istream& input,std::string& line,bool& oversized){
+    line.clear();oversized=false;char c;bool any=false;
+    while(input.get(c)){any=true;if(c=='\n')return true;if(line.size()<1048576)line+=c;else oversized=true;}
+    return any;
 }
 int main(int argc,char** argv){
     std::string models;int threads=4;
-    for(int i=1;i<argc;++i){std::string arg=argv[i];if(arg=="--models"&&i+1<argc)models=argv[++i];else if(arg=="--threads"&&i+1<argc)threads=std::stoi(argv[++i]);else return 2;}
+    try {
+        for(int i=1;i<argc;++i){
+            std::string arg=argv[i];
+            if(arg=="--models"&&i+1<argc)models=argv[++i];
+            else if(arg=="--threads"&&i+1<argc){size_t used=0;std::string value=argv[++i];threads=std::stoi(value,&used);if(used!=value.size()||threads<1||threads>64)return 2;}
+            else return 2;
+        }
+    }catch(const std::exception&){return 2;}
     if(models.empty())return 2;
     std::unique_ptr<ds::Models> engine;std::unique_ptr<ds::ScratchSpace> workspace;
     std::array<fs::path,3> stems;std::string source_name;
-    emit({{"type","ready"},{"runtime",ds::Models::version()}});std::string line;
-    while(std::getline(std::cin,line)){
+#if defined(__x86_64__)
+    const char* architecture="x86_64";
+#else
+    const char* architecture="arm64";
+#endif
+    emit({{"type","ready"},{"runtime",ds::Models::version()},{"architecture",architecture}});std::string line;
+    bool oversized=false;
+    while(read_command(std::cin,line,oversized)){
         json id=nullptr;
         try{
-            if(line.size()>1048576)throw std::runtime_error("Comando demasiado largo.");
-            auto command=json::parse(line);id=command.value("id",json(nullptr));auto cmd=command.at("cmd").get<std::string>();
+            if(oversized)throw std::runtime_error("Comando demasiado largo.");
+            auto command=json::parse(line,[](int depth,json::parse_event_t,json&){if(depth>16)throw std::runtime_error("JSON demasiado anidado.");return true;});
+            if(!command.is_object()||!command.contains("id")||!command["id"].is_number_integer()||!command.contains("cmd")||!command["cmd"].is_string())throw std::runtime_error("Esquema de comando inválido.");
+            if(command["id"].is_number_unsigned()&&command["id"].get<uint64_t>()>9007199254740991ULL)throw std::runtime_error("Identificador fuera de rango.");
+            auto numeric_id=command["id"].get<int64_t>();
+            if(numeric_id< -9007199254740991LL||numeric_id>9007199254740991LL)throw std::runtime_error("Identificador fuera de rango.");
+            id=numeric_id;auto cmd=command["cmd"].get<std::string>();
+            for(const char* key:{"source","workspace","destination","staging"})if(command.contains(key)){
+                if(!command[key].is_string())throw std::runtime_error("Ruta inválida.");
+                auto path=command[key].get<std::string>();if(path.empty()||path.size()>4096||path.find('\0')!=std::string::npos)throw std::runtime_error("Ruta inválida.");
+            }
             if(cmd=="inspect"){
                 auto result=info_json(ds::inspect_wav(command.at("source").get<std::string>()));result["type"]="info";result["id"]=id;emit(result);
             }else if(cmd=="separate"){
@@ -94,7 +118,7 @@ int main(int argc,char** argv){
                 if(!before.matches(source))throw std::runtime_error("El archivo original cambió durante la lectura; vuelve a abrirlo.");
                 info=audio.info; // Buffer dimensions always come from the same open file as its samples.
                 auto started=std::chrono::steady_clock::now();
-                if(!engine){emit({{"type","progress"},{"id",id},{"value",0},{"stage","Cargando y verificando modelos"}});verify_models(models);engine=std::make_unique<ds::Models>(models,threads);}
+                if(!engine){emit({{"type","progress"},{"id",id},{"value",0},{"stage","Cargando y verificando modelos"}});engine=std::make_unique<ds::Models>(models,threads);}
                 auto loaded=std::chrono::steady_clock::now();
                 ds::Pipeline pipeline(engine.get(),factory,[&](double value,const std::string& stage){emit({{"type","progress"},{"id",id},{"value",value*.94},{"stage",stage}});return true;});
                 auto output=pipeline.separate(audio.samples->data(),info.frames,info.channels,info.rate);

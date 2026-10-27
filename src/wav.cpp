@@ -18,6 +18,13 @@ uint32_t u32(const unsigned char* p){return uint32_t(p[0])|uint32_t(p[1])<<8|uin
 void put16(std::vector<unsigned char>& out,uint16_t v){out.push_back(v&255);out.push_back(v>>8);}
 void put32(std::vector<unsigned char>& out,uint32_t v){for(int i=0;i<4;++i)out.push_back((v>>(8*i))&255);}
 void tag(std::vector<unsigned char>& out,const char* text){out.insert(out.end(),text,text+4);}
+std::ifstream open_regular(const std::filesystem::path& path){
+    int fd=::open(path.c_str(),O_RDONLY|O_NONBLOCK|O_NOFOLLOW|O_CLOEXEC);struct stat st{};
+    if(fd<0||::fstat(fd,&st)||!S_ISREG(st.st_mode)){if(fd>=0)::close(fd);throw std::runtime_error("El origen no es un archivo WAV regular legible.");}
+    // Reopen the pinned descriptor, rather than resolving the caller's path twice.
+    std::ifstream file("/dev/fd/"+std::to_string(fd),std::ios::binary);::close(fd);
+    if(!file)throw std::runtime_error("No se puede abrir el archivo WAV.");return file;
+}
 void read_exact(std::ifstream& file,unsigned char* dest,size_t count){
     if(!file.read(reinterpret_cast<char*>(dest),std::streamsize(count)))throw std::runtime_error("El WAV está truncado o no se puede leer.");
 }
@@ -85,11 +92,11 @@ static WavInfo parse_header(std::ifstream& file){
     return info;
 }
 WavInfo inspect_wav(const std::filesystem::path& path){
-    std::ifstream file(path,std::ios::binary);
+    auto file=open_regular(path);
     return parse_header(file);
 }
 Audio read_wav(const std::filesystem::path& path,BufferFactory factory){
-    std::ifstream file(path,std::ios::binary);
+    auto file=open_regular(path);
     auto info=parse_header(file);size_t size=info.frames*info.channels;
     auto buffer=factory?factory(size):std::make_shared<Heap>(size);
     if(!buffer||buffer->size()!=size||!buffer->data())throw std::runtime_error("No hay memoria para leer el WAV.");

@@ -1,24 +1,104 @@
-# Validación de la beta personal 0.1
+# Validación de Cauces
 
-27-10-2026. Pruebas locales en Apple M2, 16 GB, macOS 26.5.2. Objetivo de
+27–28-10-2026. Pruebas locales en Apple M2, 16 GB, macOS 26.5.2. Objetivo de
 despliegue macOS 15.0. Intel físico con Sequoia 15.7.5: **pendiente**.
 
-Este documento resume una ejecución local previa a la publicación del código.
+Las secciones históricas describen la beta 0.1 y no deben atribuirse al paquete
+0.2 ni al runtime actualizado.
 Las rutas `evidence/`, `build/` y `dist/` que aparecen abajo identifican
 artefactos locales excluidos del repositorio público. No hay modelos, audios,
 paquetes ni capturas originales publicados aquí, y no se afirma que GitHub
 haya ejecutado las pruebas de inferencia.
 
-## Resultado y artefactos
+## Cauces 0.2: seguridad y runtime 1.31.1
 
-App universal ARM64/x86_64 en `dist/Separador de diálogo.app`, unos 247 MB;
+Nombre de integración: **Cauces Multi-Speaker Separation ONNX v1 (selective FP16)**.
+Los cuatro assets binarios conservan sus SHA-256; solo cambia el manifiesto de
+la copia propia. El código de la rama local de seguridad se valida con datos
+sintéticos. No se han publicado modelos, audios ni un paquete nuevo en GitHub.
+
+| Runtime 1.31.1 CPU | Casos dentro de tolerancia | Casos bit a bit | Máximo error absoluto |
+|---|---:|---:|---:|
+| ARM64, corpus de 15 casos | 15/15 | 2/15 | 3.069639205932617e-06 |
+| x86_64/Rosetta, mismo corpus | 15/15 | 2/15 | 4.455447196960449e-06 |
+| ARM64, mezcla adicional de 30 s | 1/1 | 0/1 | 1.5310943126678467e-06 |
+
+Se conservan `atol=1e-5`, `rtol=1e-4`: **31/31 comparaciones dentro de tolerancia**.
+Esto no implica igualdad bit a bit ni aceptación auditiva profesional.
+CSV de divergencias fuera de tolerancia: cero filas. Valores originales/nativos,
+máscaras de diferencias IEEE754 y hashes se conservan en NPZ y manifests:
+
+- `evidence/native-cpu-arm64-20261027-233543/`.
+- `evidence/native-cpu-x86_64-20261027-234951/`.
+- `evidence/runtime-1.31.1-30s-arm64/`.
+
+Seguridad y robustez comprobadas:
+
+- Siete grupos CTest pasan en ambas arquitecturas: DSP, pipeline, WAV/BWF, API C,
+  limpieza por identidad, límites de almacenamiento y rechazo de FIFO.
+- Seis comandos JSON malformados/adversariales, cinco argumentos de hilos
+  inválidos y 100 WAV malformados se rechazan sin crash; el protocolo recupera.
+- El JSON de profundidad 50.000 antes provocaba SIGSEGV; ahora devuelve un error
+  acotado. Las líneas se limitan antes de acumularlas y los ids son enteros.
+- Reproducciones C++ y Swift de raíz temporal movida/reutilizada conservan el
+  contenido sustituto. La limpieza recorre descriptores anclados y no sigue
+  symlinks; copia y publicación usan creación/rename exclusivos.
+- Copias con SHA-256, cancelación, colisiones, rutas inválidas y origen FIFO;
+  cancelación/reintento con worker real y limpieza síncrona; estado de GUI.
+- La API C rechaza archivos de modelos ajenos al conjunto permitido antes de
+  entregarlos al runtime. Se cargan grafos y pesos desde los mismos buffers
+  verificados; no se reabren rutas entre verificación y sesiones.
+- App Sandbox sin permisos de red, Hardened Runtime y firma ad hoc verificados
+  en el paquete universal. Sondas de test con el controller real y cada slice
+  del worker comprueban EPERM en padre/hijo, inspección, separación no nula,
+  reproducción, exportación de tres stems, cancelación y cierre. Las sondas no
+  se incluyen en el paquete entregado.
+- GUI real: NSOpenPanel, copia local privada, separación de 8 s, reproducción,
+  cambio de pista, búsqueda accesible y exportación a un destino concedido por
+  el usuario funcionan. Hash, tamaño y mtime de la entrada conservados durante
+  separación/exportación. Una carpeta sintética local llamada MEGA verifica el
+  rechazo de la política sin acceder a un proveedor de nube real.
+
+La copia de desarrollo oficial del runtime ARM64 se verificó contra el SHA-256
+publicado por GitHub; Intel se compiló desde el commit fijado
+`6af1a932e2286d5c58166085d24c68783033edee`. La fuente contiene el endurecimiento
+posterior al runtime anterior; no se afirma una auditoría exhaustiva de todos
+sus componentes. Telemetría desactivada, proveedor CPU.
+
+**Límites de seguridad:** se deniega la red de los procesos de Cauces; no se
+controlan servicios de macOS u otras apps sincronizadoras. La política rechaza
+volúmenes no locales, dataless y raíces de nube reconocidas; no descubre todas
+las configuraciones de sincronización posibles. No se probó un volumen SMB
+real ni un proveedor de nube con audio: se evita generar tráfico de prueba a
+esos servicios. Las comprobaciones de identidad y unlink/rename no son atómicas
+frente a escritores concurrentes del mismo usuario. El repro de la raíz
+sustituida queda resuelto; un proceso hostil con acceso de escritura sigue fuera
+de la frontera de aislamiento. La firma ad hoc requiere desactivar library
+validation solo en el worker para cargar la biblioteca local sin Team ID;
+no hay permisos de JIT, depuración ni variables DYLD. No hay notarización.
+
+La documentación actual y los scripts propios ya no dependen de la marca o de
+la instalación anterior. Se conserva la atribución a MossFormer2 y la
+procedencia no identificada del refiner; el nombre Cauces no implica haber
+entrenado los pesos ni derechos de redistribución sobre todos los assets.
+Las capturas y evidencias históricas originales permanecen intactas.
+
+Resultados detallados y logs: `evidence/security-audit-20261027/`. Los tiempos de
+las pruebas nuevas se tomaron junto a compilación/otras pruebas; no son una
+comparativa aislada de rendimiento. No se ha repetido una prueba neural no
+silenciosa de 30 minutos, escucha profesional ni round trip en Pro Tools.
+El Intel físico con Sequoia 15.7.5 sigue pendiente.
+
+## Referencia histórica: beta 0.1, runtime 1.24.2
+
+App universal ARM64/x86_64 en `paquete local previo de la beta 0.1`, unos 247 MB;
 ZIP personal de unos 177 MB y checksum en `dist/SHA256.txt`.
 Firma ad hoc local comprobada, sin notarización Developer ID.
 El paquete se descomprimió en `build/relocated-package/` y su worker procesó
 audio no nulo en ambas arquitecturas (x86_64 bajo Rosetta), usando únicamente
 el runtime y modelos contenidos en esa copia. No precisa Python en destino.
 
-## Comparación con VoxUno CPU
+## Comparación histórica con capturas de referencia CPU
 
 Tolerancia fijada antes de implementar: `atol=1e-5`, `rtol=1e-4`. Se comprueban
 también dimensiones, sample rate, finitud e integridad de cada entrada.
@@ -39,7 +119,7 @@ Resultados y cada divergencia:
 - `evidence/native-cpu-20261027-140034/results.json`: corpus ARM64 final.
 - `evidence/native-cpu-x86_64-20261027-140155/results.json`: x86_64 final.
 - `evidence/extended-30s/results.json`: mezcla de 30 s con múltiples bloques,
-  solapamientos, alineación y ganancia global; capturas del VoxUno real.
+  solapamientos, alineación y ganancia global; capturas de la aplicación de referencia.
 - Cada carpeta contiene `divergences.csv`: **cero filas fuera de tolerancia**.
   `difference-manifest.json` y los NPZ por stem conservan todos los valores
   originales/nativos y todas las máscaras de diferencias IEEE754, además de
@@ -51,18 +131,18 @@ Son fixtures sintéticos; no representan una validación de voces ni del acting.
 
 ## Rendimiento y recursos
 
-| Entrada, motor ya cargado | Nuevo worker CPU | VoxUno CPU, interfaz real |
+| Entrada, motor ya cargado | Nuevo worker CPU | Referencia CPU, interfaz real |
 |---|---:|---:|
 | 8 s | 18.29 s | 20.40 s |
 | 30 s | 83.63 s | 91.23 s |
 
-En estas mediciones queda por debajo del objetivo de no superar 2× VoxUno CPU.
+En estas mediciones queda por debajo del objetivo de no superar 2× el tiempo de la referencia CPU.
 Carga inicial del nuevo motor: 2.18 s en esa serie. Cuatro hilos por sesión,
 ejecución secuencial, optimización ORT completa y spinning desactivado.
 Prueba inicial aislada del modelo principal: ~55 s/8 s con un hilo frente a
 ~17 s con cuatro, tomada durante compilación; no se usa como benchmark final.
 
-La nueva app mide dentro del worker; VoxUno se midió desde Open hasta la
+La nueva app mide dentro del worker; la referencia se midió desde Open hasta la
 primera observación de `3 stems ready`, con modelo precargado y observaciones
 CUA repetidas. La captura de UI introduce overhead. Son comparaciones prácticas
 con los mismos archivos sintéticos, no microbenchmarks ni garantías de velocidad.
@@ -123,7 +203,7 @@ cabecera y muestras, staging abandonado al cerrar y preflight insuficiente a
    el resultado bajo Rosetta no permite predecirlo.
 2. Escuchar diálogos representativos elegidos por el usuario, localmente;
    comprobar acting, respiración, solapamientos, artefactos y bleed frente a
-   VoxUno. No se ha utilizado material de producción privado.
+   la referencia CPU. No se ha utilizado material de producción privado.
 3. Verificar el round trip en Pro Tools y el BWF dentro de su flujo real.
 4. Prueba sostenida con audio no nulo hasta 30 minutos y evaluación de CoreML.
    La beta funciona en CPU; no incluye aceleración GPU habilitada ni probada.

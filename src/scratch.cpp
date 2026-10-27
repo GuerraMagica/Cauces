@@ -29,10 +29,10 @@ public:
 ScratchSpace::ScratchSpace(const std::filesystem::path& parent){
     auto status=std::filesystem::symlink_status(parent);
     if(!std::filesystem::is_directory(status)||std::filesystem::is_symlink(status))throw std::runtime_error("La carpeta temporal no es válida.");
-    std::string pattern=(parent/"job-XXXXXX").string();
-    if(!::mkdtemp(pattern.data()))throw std::runtime_error("No se puede crear el espacio de trabajo.");root=pattern;
+    char error[512]{};owned=cauces_directory_create(parent.c_str(),"job-",error,sizeof(error));
+    if(!owned)throw std::runtime_error(error);root=cauces_directory_path(owned);
 }
-ScratchSpace::~ScratchSpace(){std::error_code ec;std::filesystem::remove_all(root,ec);}
+ScratchSpace::~ScratchSpace(){cauces_directory_destroy(owned);}
 Buffer ScratchSpace::allocate(size_t n){return std::make_shared<MappedStorage>(root,n);}
 uint64_t required_working_space(const WavInfo& info){
     uint64_t n=info.frames,c=info.channels,l=resampled_length(info.frames,info.rate,16000),h=resampled_length(info.frames,info.rate,48000);
