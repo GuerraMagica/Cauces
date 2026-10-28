@@ -1,4 +1,4 @@
-Cauces Multi-Speaker Separation ONNX v1 (selective FP16)
+Cauces Multi-Speaker Separation ONNX v3 (selective FP16)
 
 This is a local integration name for existing converted ONNX assets, not a claim
 that Cauces trained the weights. The package processes exactly two speakers and
