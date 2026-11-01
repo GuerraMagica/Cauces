@@ -8,8 +8,10 @@ xcrun swiftc -swift-version 5 -module-cache-path build/swift-cache src/LocalFile
 build/local-policy-tests
 xcrun swiftc -swift-version 5 -module-cache-path build/swift-cache -import-objc-header src/security.h src/PrivateDirectory.swift tests/PrivateDirectoryTests.swift build/arm64/libcauces_security.a -lc++ -o build/private-directory-tests
 build/private-directory-tests
-xcrun swiftc -swift-version 5 -module-cache-path build/swift-cache -import-objc-header src/security.h src/PrivateDirectory.swift src/WorkerConnection.swift tests/WorkerConnectionTests.swift build/arm64/libcauces_security.a -lc++ -o build/worker-connection-tests
-build/worker-connection-tests "$PWD" "${CAUCES_MODEL_DIR:-$PWD/vendor/cauces-models}" "${CAUCES_REFERENCE_FIXTURES_DIR:-$PWD/build/reference-fixtures}"
+for task_arch in arm64 x86_64; do
+  xcrun swiftc -swift-version 5 -target "$task_arch-apple-macos15.0" -module-cache-path "build/swift-cache-$task_arch" -import-objc-header src/security.h src/PrivateDirectory.swift src/WorkerConnection.swift tests/WorkerConnectionTests.swift "build/$task_arch/libcauces_security.a" -lc++ -o "build/worker-connection-tests-$task_arch"
+  "build/worker-connection-tests-$task_arch" "$PWD" "${CAUCES_MODEL_DIR:-$PWD/vendor/cauces-models}" "${CAUCES_REFERENCE_FIXTURES_DIR:-$PWD/build/reference-fixtures}"
+done
 
 xcrun swiftc -swift-version 5 -module-cache-path build/swift-cache src/JobState.swift src/AppMessages.swift tests/AppMessagesTests.swift -o build/app-message-tests
 build/app-message-tests

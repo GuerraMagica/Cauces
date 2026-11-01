@@ -1,5 +1,36 @@
 # Validación de Cauces
 
+## Regresiones de infraestructura — 01-11-2026
+
+- Cambios limitados a pruebas, documentación e instrucciones de Git. El código
+  de producción, modelos, pesos, DSP, runtime y paquete 0.4.1 quedan intactos.
+- `tests/run_security_tests.sh`: 8/8 CTest ARM64 y 8/8 x86_64/Rosetta; contratos
+  Swift, 100 WAV malformados y protocolo/exportación existentes pasan.
+- Protocolo en ambas arquitecturas: seis payloads adversariales, cinco argumentos
+  de threads inválidos y FIFO como entrada tanto de `inspect` como de `separate`
+  (hash del origen). Se exige error acotado y recuperación con un WAV válido.
+- Integridad en ambas arquitecturas: cada uno de separator.onnx, refiner.onnx y
+  weights.bin se altera, elimina o sustituye por FIFO individualmente en un clon
+  privado, con los otros assets válidos. Worker y API C rechazan los nueve casos:
+  36 rechazos comprobados entre ambos entry points y ambas arquitecturas.
+  Controles positivos antes/después aceptan los assets aprobados. Hash, tamaño y
+  mtime de los originales se conservan. Los probes de API tienen timeout externo
+  y verifican su arquitectura real; no se carga una dylib x86_64 desde Python ARM.
+- Transporte Swift compilado para cada arquitectura contra su worker real:
+  progreso antes de cancelar, limpieza sincronizada y reintento pasan.
+- Paquete 0.4.1 y ZIP extraído fuera del proyecto: firma, arquitecturas, rutas
+  relativas, entitlements y hashes pasan. Probes del controller/worker del bundle
+  en ARM64/x86_64 pasan inspección, separación, playback, exportación, cancelación
+  y cierre; red denegada con EPERM en padre/hijo. Exports conservan 44100 Hz y
+  352800 muestras. No se modifican dispositivos ni preferencias de reproducción.
+- Evidencia local ignorada: `evidence/security-regressions-20261101/`.
+  Las pruebas de paquete/sandbox se ejecutan por separado de la suite general.
+- Sin cambios trasladados del LAB ni nueva afirmación de calidad. Los 30/30 casos
+  de la auditoría del 28-10 son históricos; no se repiten como parte de este
+  refuerzo. Siguen pendientes la diferencia perceptiva del reproductor, escucha
+  de diálogo real/acting, Intel físico, Pro Tools y metadata ajena al contrato
+  BWF time_reference ya probado.
+
 ## Cauces 0.4.1 — Portabilidad del lector WAV (2026-10-28)
 
 - Error fotografiado reproducido con un WAV sintético válido al denegar la

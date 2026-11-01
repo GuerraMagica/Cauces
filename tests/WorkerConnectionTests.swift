@@ -5,7 +5,12 @@ import Foundation
         let root = URL(fileURLWithPath: CommandLine.arguments[1])
         let models = URL(fileURLWithPath: CommandLine.arguments[2])
         let fixtures = URL(fileURLWithPath: CommandLine.arguments[3])
-        let binary = root.appendingPathComponent("build/arm64/dialogue-worker")
+#if arch(x86_64)
+        let architecture = "x86_64"
+#else
+        let architecture = "arm64"
+#endif
+        let binary = root.appendingPathComponent("build/\(architecture)/dialogue-worker")
         let temporary = root.appendingPathComponent("build/transport-tests-\(UUID().uuidString)")
         try FileManager.default.createDirectory(at: temporary, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: temporary) }
@@ -18,6 +23,7 @@ import Foundation
         let worker = try WorkerConnection(executable: binary, models: models, temporaryRoot: temporary)
         worker.onEvent = { events.append($0) }
         wait { events.contains { $0["type"] as? String == "ready" } }
+        precondition(events.first { $0["type"] as? String == "ready" }?["architecture"] as? String == architecture, "Wrong worker architecture")
         try worker.send(["cmd":"separate","source":fixtures.appendingPathComponent("chunk8_exact.wav").path,"workspace":worker.workspace.path,"id":1])
         wait { events.contains { ($0["stage"] as? String) == "Separating voices…" } }
         worker.close()
@@ -52,6 +58,6 @@ import Foundation
         precondition(staging.allSatisfy { !FileManager.default.fileExists(atPath: $0.path) }, "App termination could leave export temporaries")
         wait { !FileManager.default.fileExists(atPath: retry.workspace.path) }
         wait { staging.allSatisfy { !FileManager.default.fileExists(atPath: $0.path) } }
-        print("Real worker cancellation, cleanup and retry passed")
+        print("\(architecture): real worker progress, cancellation, cleanup and retry passed")
     }
 }
