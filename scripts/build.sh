@@ -15,7 +15,7 @@ for task_arch in "${@:-arm64 x86_64}"; do
     cmake --build "build/$task_target" --parallel 2
     xcrun swiftc -swift-version 5 -O -target "$task_target-apple-macos15.0" \
       -module-cache-path "build/swift-cache-$task_target" \
-      src/App.swift src/JobState.swift src/JobController.swift src/WorkerConnection.swift src/PreviewPlayer.swift src/PrivateDirectory.swift src/LocalFilePolicy.swift \
+      src/App.swift src/AudioOutput.swift src/AudioSettingsView.swift src/CaucesStyle.swift src/AppMessages.swift src/JobState.swift src/JobController.swift src/WorkerConnection.swift src/PreviewPlayer.swift src/PrivateDirectory.swift src/LocalFilePolicy.swift \
       -import-objc-header src/security.h "build/$task_target/libcauces_security.a" -lc++ \
       -o "build/$task_target/Cauces"
   done

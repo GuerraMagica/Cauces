@@ -16,11 +16,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             MainView(controller: controller)
                 .onAppear { delegate.shutdown = { controller.shutdown() } }
         }
-        .defaultSize(width: 860, height: 620)
+        .defaultSize(width: 1000, height: 656)
         .windowResizability(.contentMinSize)
         .commands {
-            CommandGroup(replacing: .newItem) { Button("Abrir WAV…") { controller.choose() }.keyboardShortcut("o").disabled(controller.state.busy) }
+            AudioSettingsCommands()
+            CommandGroup(replacing: .newItem) {
+                Button("Open audio…") { controller.choose() }
+                    .keyboardShortcut("o").disabled(controller.state.busy)
+            }
         }
+        Window("Settings", id: "audio-settings") {
+            AudioSettingsView(output: controller.preview.output)
+        }.windowResizability(.contentSize).defaultPosition(.center)
     }
 }
 
@@ -28,102 +35,180 @@ struct MainView: View {
     @ObservedObject var controller: JobController
     @State private var dropping = false
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Cauces").font(.largeTitle.bold())
-                    Text("Dos voces · Residual · Procesamiento local").foregroundStyle(.secondary)
-                }
-                Spacer()
-                Text("BETA PERSONAL · CPU").font(.caption.weight(.semibold)).padding(.horizontal, 10).padding(.vertical, 7)
-                    .background(.quaternary, in: Capsule())
+        VStack(spacing: 22) {
+            if controller.state.hasResult {
+                ReviewView(controller: controller)
+            } else {
+                importPanel
             }
-            VStack(spacing: 12) {
-                Image(systemName: controller.source == nil ? "waveform.badge.plus" : "waveform")
-                    .font(.system(size: 30)).foregroundStyle(.tint)
-                Text(controller.source?.lastPathComponent ?? "Arrastra un WAV o selecciona un archivo")
-                    .font(.headline).lineLimit(2).textSelection(.enabled)
-                Text(controller.info).font(.callout).foregroundStyle(.secondary).multilineTextAlignment(.center)
-                Button(controller.source == nil ? "Abrir WAV…" : "Cambiar archivo…") { controller.choose() }
-                    .disabled(controller.state.busy)
-                if controller.source == nil { Text("Hasta 30 minutos. Los originales se conservan.").font(.caption).foregroundStyle(.secondary) }
-            }
-            .frame(maxWidth: .infinity).padding(24)
-            .background(dropping ? Color.accentColor.opacity(0.12) : Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 14))
-            .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(dropping ? Color.accentColor : Color.primary.opacity(0.12), style: StrokeStyle(lineWidth: 1, dash: [6, 5])))
-            .onDrop(of: [UTType.fileURL.identifier], isTargeted: $dropping) { providers in
-                guard !controller.state.busy, let provider = providers.first else { return false }
-                _ = provider.loadObject(ofClass: URL.self) { url, _ in
-                    guard let url else { return }; Task { @MainActor in controller.open(url) }
-                }; return true
-            }
-            VStack(alignment: .leading, spacing: 10) {
-                HStack {
-                    Text(controller.stage).font(.headline)
-                    Spacer()
-                    Text(controller.elapsed).font(.caption.monospacedDigit()).foregroundStyle(.secondary)
-                }
-                if controller.state.active == .separate { ProgressView(value: controller.progress).accessibilityLabel("Progreso de separación") }
-                HStack {
-                    Button("Separar voces", systemImage: "waveform.path") { controller.separate() }
-                        .buttonStyle(.borderedProminent).disabled(!controller.state.canSeparate)
-                    if controller.state.active == .separate || controller.state.active == .inspect {
-                        Button("Cancelar", role: .cancel) { controller.cancel() }
+            Text("© GuerraMagica Audio").font(.system(size: 12))
+                .foregroundStyle(FlowTheme.secondary).frame(maxWidth: .infinity)
+        }
+        .padding(32).frame(minWidth: 820, minHeight: 576)
+        .background(FlowTheme.background)
+        .foregroundStyle(FlowTheme.text).tint(FlowTheme.action).preferredColorScheme(.dark)
+        .background(FlowWindowStyle())
+        .onDrop(of: [UTType.fileURL.identifier], isTargeted: $dropping) { providers in
+            guard !controller.state.busy, let provider = providers.first else { return false }
+            _ = provider.loadObject(ofClass: URL.self) { url, _ in
+                guard let url else { return }; Task { @MainActor in controller.open(url) }
+            }; return true
+        }
+        .onReceive(controller.preview.output.$notice) { message in
+            if let message { controller.error = message; controller.preview.output.notice = nil }
+        }
+        .alert("Unable to complete the operation", isPresented: Binding(get: { controller.error != nil }, set: { if !$0 { controller.error = nil } })) {
+            Button("OK") { controller.error = nil }
+        } message: { Text(controller.error ?? "") }
+    }
+    private var importPanel: some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: 16)
+            FlowArtwork().padding(.horizontal, 28)
+            Spacer().frame(height: 26)
+            if controller.state.busy {
+                Text(controller.state.active == .inspect ? "Opening audio" : "Separating voices")
+                    .font(.system(size: 30, weight: .semibold))
+                sourceName.padding(.top, 12)
+                VStack(spacing: 12) {
+                    if controller.state.active == .separate {
+                        ProgressView(value: controller.progress).accessibilityLabel("Separation progress")
+                        HStack {
+                            Text(controller.stage)
+                            Spacer()
+                            Text("\(Int(controller.progress * 100))%").monospacedDigit()
+                        }.font(.system(size: 13)).foregroundStyle(FlowTheme.secondary)
+                    } else {
+                        ProgressView().controlSize(.small).accessibilityLabel("Opening audio")
                     }
-                    if controller.state.active == .export { ProgressView().controlSize(.small); Text("Exportando…").foregroundStyle(.secondary) }
-                    Spacer()
-                    Button("Exportar tres stems…", systemImage: "square.and.arrow.up") { controller.export() }
-                        .disabled(!controller.state.canExport)
-                }
+                }.frame(maxWidth: 420).padding(.top, 26)
+                Button("Cancel", role: .cancel) { controller.cancel() }
+                    .buttonStyle(FlowButtonStyle()).keyboardShortcut(.cancelAction).padding(.top, 24)
+            } else if controller.state.hasSource {
+                Text("Ready to separate").font(.system(size: 30, weight: .semibold))
+                sourceName.padding(.top, 12)
+                Text(controller.info).font(.system(size: 13)).foregroundStyle(FlowTheme.secondary).padding(.top, 8)
+                HStack(spacing: 12) {
+                    Button("Separate voices", systemImage: "waveform.path") { controller.separate() }
+                        .buttonStyle(FlowButtonStyle(primary: true)).keyboardShortcut(.defaultAction)
+                    Button("Change file…") { controller.choose() }.buttonStyle(FlowButtonStyle())
+                }.padding(.top, 28)
+            } else {
+                Text("Give each voice its own course.").font(.system(size: 30, weight: .semibold))
+                    .multilineTextAlignment(.center)
+                Text("Drop a WAV file here to get started.").font(.system(size: 16))
+                    .foregroundStyle(FlowTheme.secondary).padding(.top, 12)
+                Button("Open audio…", systemImage: "plus") { controller.choose() }
+                    .buttonStyle(FlowButtonStyle(primary: true)).keyboardShortcut(.defaultAction).padding(.top, 28)
+                Text("Mono or identical dual mono · 8–48 kHz · Up to 30 min")
+                    .font(.system(size: 12)).foregroundStyle(FlowTheme.secondary).padding(.top, 16)
             }
-            Divider()
-            PreviewView(player: controller.preview) { controller.error = $0.localizedDescription }
-                .disabled(!controller.preview.ready || controller.state.busy)
-            HStack(alignment: .top) {
-                Text("Float32 · Sin normalización automática · El residual puede contener diálogo")
-                    .font(.caption).foregroundStyle(.secondary)
-                Spacer()
-                if let directory = controller.exportDirectory {
-                    Button("Mostrar exportación") { NSWorkspace.shared.activateFileViewerSelecting([directory]) }.font(.caption)
+            Spacer(minLength: 20)
+        }
+        .padding(28).frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(FlowTheme.surface, in: RoundedRectangle(cornerRadius: 16))
+        .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(dropping ? FlowTheme.action : FlowTheme.border, style: StrokeStyle(lineWidth: dropping ? 2 : 1, dash: dropping ? [6, 5] : [])))
+    }
+    private var sourceName: some View {
+        Text(controller.source?.lastPathComponent ?? "Audio")
+            .font(.system(size: 16, weight: .medium)).lineLimit(1).truncationMode(.middle)
+            .help(controller.source?.lastPathComponent ?? "Audio").textSelection(.enabled)
+    }
+}
+
+struct ReviewView: View {
+    @ObservedObject var controller: JobController
+    var body: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            HStack(spacing: 12) {
+                Image(systemName: "waveform").font(.system(size: 23)).foregroundStyle(FlowTheme.voice1)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(controller.source?.lastPathComponent ?? "Audio").font(.system(size: 15, weight: .semibold))
+                        .lineLimit(1).truncationMode(.middle).help(controller.source?.lastPathComponent ?? "Audio")
+                    Text(controller.info).font(.system(size: 12)).foregroundStyle(FlowTheme.secondary)
                 }
+                Spacer(minLength: 16)
+                Button("Change file…") { controller.choose() }.buttonStyle(FlowButtonStyle()).disabled(controller.state.busy)
+            }
+            VStack(alignment: .leading, spacing: 22) {
+                FlowArtwork().frame(maxWidth: .infinity).frame(height: 130)
+                Text("Listen to each voice").font(.system(size: 26, weight: .semibold))
+                Text("Switch between tracks at the same point in time.")
+                    .font(.system(size: 14)).foregroundStyle(FlowTheme.secondary).padding(.top, -12)
+                PreviewView(player: controller.preview, output: controller.preview.output) { controller.error = AppMessages.describe($0) }
+                    .disabled(controller.state.busy)
+            }
+            .padding(28).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .background(FlowTheme.surface, in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(FlowTheme.border))
+            HStack(spacing: 12) {
+                if controller.state.active == .export {
+                    ProgressView().controlSize(.small)
+                    Text("Exporting audio…").font(.system(size: 13)).foregroundStyle(FlowTheme.secondary)
+                } else if let directory = controller.exportDirectory {
+                    Label("Audio exported", systemImage: "checkmark.circle.fill")
+                        .font(.system(size: 13)).foregroundStyle(FlowTheme.success)
+                    Button("Show folder") { NSWorkspace.shared.activateFileViewerSelecting([directory]) }
+                        .buttonStyle(.link).font(.system(size: 13))
+                } else {
+                    Button("Separate again") { controller.separate() }.buttonStyle(FlowButtonStyle())
+                }
+                Spacer(minLength: 12)
+                Button("Export audio…", systemImage: "square.and.arrow.up") { controller.export() }
+                    .buttonStyle(FlowButtonStyle(primary: true)).disabled(!controller.state.canExport)
             }
         }
-        .padding(28).frame(minWidth: 760, minHeight: 600)
-        .alert("No se ha podido completar", isPresented: Binding(get: { controller.error != nil }, set: { if !$0 { controller.error = nil } })) {
-            Button("Entendido") { controller.error = nil }
-        } message: { Text(controller.error ?? "") }
     }
 }
 
 struct PreviewView: View {
     @ObservedObject var player: PreviewPlayer
+    @ObservedObject var output: AudioOutputSettings
     var onError: (Error) -> Void
     @State private var scrubbing = false
     @State private var scrubPosition = 0.0
     @State private var resume = false
+    private let labels = ["Original", "Voice 1", "Voice 2", "Residual"]
+    private let colors = [FlowTheme.text, FlowTheme.voice1, FlowTheme.voice2, FlowTheme.residual]
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                Text("Comparar en el mismo punto").font(.headline)
-                Spacer()
-                Picker("Escuchar", selection: $player.selected) {
-                    Text("Original").tag(0); Text("Voz 1").tag(1); Text("Voz 2").tag(2); Text("Residual").tag(3)
-                }.pickerStyle(.segmented).frame(maxWidth: 480)
-            }
-            HStack(spacing: 14) {
+        VStack(spacing: 24) {
+            HStack(spacing: 10) {
+                ForEach(0..<4) { index in
+                    Button { player.selected = index } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: player.selected == index ? "checkmark.circle.fill" : "circle")
+                                .foregroundStyle(colors[index])
+                            Text(labels[index]).font(.system(size: 14, weight: .semibold))
+                        }.frame(maxWidth: .infinity).frame(height: 44)
+                            .background(player.selected == index ? FlowTheme.raised : FlowTheme.surface, in: RoundedRectangle(cornerRadius: 10))
+                            .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(player.selected == index ? colors[index] : FlowTheme.border))
+                    }.buttonStyle(.plain)
+                        .keyboardShortcut(KeyEquivalent(Character(String(index + 1))), modifiers: .command)
+                        .help("Listen to \(labels[index]) (⌘\(index + 1))")
+                        .accessibilityLabel(labels[index])
+                        .accessibilityValue(player.selected == index ? "Selected" : "Not selected")
+                        .accessibilityAddTraits(player.selected == index ? [.isSelected] : [])
+                }
+            }.accessibilityElement(children: .contain).accessibilityLabel("Listen to track")
+            HStack(spacing: 16) {
                 Button { do { try player.toggle() } catch { onError(error) } } label: {
-                    Image(systemName: player.playing ? "pause.fill" : "play.fill").frame(width: 22)
-                }.accessibilityLabel(player.playing ? "Pausar" : "Reproducir")
-                Slider(value: Binding(get: { scrubbing ? scrubPosition : player.position }, set: { scrubPosition = $0 }), in: 0...max(0.001, player.duration)) { editing in
+                    Image(systemName: player.playing ? "pause.fill" : "play.fill").frame(width: 20)
+                }.buttonStyle(FlowButtonStyle()).keyboardShortcut(" ", modifiers: [])
+                    .help("Play or pause (Space)").accessibilityLabel(player.playing ? "Pause" : "Play")
+                Slider(value: Binding(get: { scrubbing ? scrubPosition : player.position }, set: { value in
+                    scrubPosition = value
+                    if !scrubbing { do { try player.seek(to: value) } catch { onError(error) } }
+                }), in: 0...max(0.001, player.duration)) { editing in
                     if editing { scrubPosition = player.position; resume = player.playing; player.pause(); scrubbing = true }
                     else {
                         do { try player.seek(to: scrubPosition); if resume { try player.play() } } catch { onError(error) }
                         scrubbing = false
                     }
-                }.accessibilityLabel("Posición de reproducción")
+                }.accessibilityLabel("Playback position")
                 Text("\(JobController.time(scrubbing ? scrubPosition : player.position)) / \(JobController.time(player.duration))")
-                    .font(.caption.monospacedDigit()).frame(width: 180, alignment: .trailing)
+                    .font(.system(size: 12).monospacedDigit()).foregroundStyle(FlowTheme.secondary)
+                    .frame(width: 166, alignment: .trailing)
             }
-        }
+        }.disabled(output.isApplying)
     }
 }

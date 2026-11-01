@@ -3,7 +3,7 @@
 No NSOpenPanel automation: source/destination are inside the test bundle/container.
 GUI user-selected file grants need a separate manual/UI acceptance test.
 """
-import json,plistlib,subprocess,sys,tempfile
+import json,os,plistlib,subprocess,sys,tempfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 app=Path(sys.argv[1]).resolve()
@@ -18,7 +18,7 @@ info=plistlib.loads((probe/'Contents/Info.plist').read_bytes())
 info.update(CFBundleIdentifier='local.julio.cauces.audit',CFBundleExecutable='CaucesAudit')
 (probe/'Contents/Info.plist').write_bytes(plistlib.dumps(info))
 subprocess.run(['cp','-c',str(source),str(probe/'Contents/Resources/audit-input.wav')],check=True)
-sources=['JobState','JobController','PreviewPlayer','WorkerConnection','PrivateDirectory','LocalFilePolicy']
+sources=['AudioOutput','AppMessages','JobState','JobController','PreviewPlayer','WorkerConnection','PrivateDirectory','LocalFilePolicy']
 command=['xcrun','swiftc','-swift-version','5','-O','-target',f'{architecture}-apple-macos15.0','-module-cache-path',str(ROOT/'build/swift-cache'),'-import-objc-header',str(ROOT/'src/security.h')]
 command += [str(ROOT/'src'/f'{name}.swift') for name in sources]
 command += [str(ROOT/'tests/SandboxProbe.swift'),str(ROOT/'build'/architecture/'libcauces_security.a'),'-lc++','-o',str(probe/'Contents/MacOS/CaucesAudit')]
@@ -33,8 +33,11 @@ subprocess.run(['clang','-arch',architecture,str(ROOT/'tests/network_denied.c'),
 subprocess.run(['codesign','--force','--sign','-','--options','runtime','--entitlements',str(ROOT/'resources/Worker.entitlements'),str(control)],check=True)
 subprocess.run(['codesign','--force','--sign','-','--options','runtime','--entitlements',str(ROOT/'resources/Cauces.entitlements'),str(probe)],check=True)
 subprocess.run(['codesign','--verify','--deep','--strict',str(probe)],check=True)
-result=subprocess.run([str(probe/'Contents/MacOS/CaucesAudit')],capture_output=True,text=True,timeout=240)
+execution=[str(probe/'Contents/MacOS/CaucesAudit')]
+result=subprocess.run(execution,capture_output=True,text=True,timeout=240)
 report={'architecture':architecture,'returncode':result.returncode,'stdout':result.stdout,'stderr':result.stderr,'bundle':str(probe),'scope':'Production controller + packaged worker; test executable replaces GUI entry point; no user-selected grants tested'}
-(ROOT/'evidence/security-audit-20261027'/f'sandbox-{architecture}-result.json').write_text(json.dumps(report,indent=2))
+evidence=Path(os.environ.get('CAUCES_PROBE_EVIDENCE',ROOT/'evidence/security-audit-20261027'))
+evidence.mkdir(parents=True,exist_ok=True)
+(evidence/f'sandbox-{architecture}-result.json').write_text(json.dumps(report,indent=2))
 print(json.dumps(report,indent=2))
 assert result.returncode==0 and 'CAUCES_SANDBOX_PASS' in result.stdout

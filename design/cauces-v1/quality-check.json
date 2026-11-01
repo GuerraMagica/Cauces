@@ -1,0 +1,45 @@
+{
+  "status": "Design proposal only; app integration awaits approval",
+  "screens_checked": 14,
+  "svg_assets": 31,
+  "png_previews": 21,
+  "single_exact_signature_per_screen": true,
+  "english_product_copy": true,
+  "removed_header_and_footer_copy_absent": true,
+  "text_and_shapes_editable": true,
+  "selection_non_color_checkmark": true,
+  "text_contrast_ratios": {
+    "text/background": 16.45,
+    "text/surface": 14.75,
+    "textSecondary/surface": 7.75,
+    "textMuted/background": 6.99,
+    "textMuted/surface": 6.27,
+    "onAction/action": 10.83,
+    "error/surface": 8.41,
+    "success/background": 12.26
+  },
+  "browser_checks": [
+    "Open audio -> ready",
+    "Separate voices -> processing",
+    "Review -> Export audio -> exported",
+    "Error -> Open audio -> ready",
+    "Flow/template switch"
+  ],
+  "app_source_unchanged": true,
+  "limitations": [
+    "Visual prototype only; no audio processing tested in this phase",
+    "Native SwiftUI layout, keyboard and accessibility validation awaits integration",
+    "Minimum import artboard checked; other states need native minimum-size verification",
+    "Proposed mark/icon are not final branding",
+    "Automated direct file URL navigation was refused by browser policy; browser interaction checks used the permitted local loopback preview. No policy bypass attempted."
+  ],
+  "independent_review": {
+    "blocking_issues": 0,
+    "improvements_applied": [
+      "Visible input compatibility guidance",
+      "Non-color checkmark for selected voice",
+      "Control-state references supplied"
+    ]
+  },
+  "browser_screenshot": "previews/browser-start.png"
+}

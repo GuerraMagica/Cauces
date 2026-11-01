@@ -23,6 +23,11 @@ def main():
     for item in [*manifest['models'].values(),*manifest['assets']]:assert hashlib.sha256((models/item['file']).read_bytes()).hexdigest()==item['sha256']
     assert manifest['name']=='Cauces Multi-Speaker Separation ONNX v1 (selective FP16)'
     assert info['CFBundleName']=='Cauces'
+    assert info['CFBundleDevelopmentRegion']=='en' and info['CFBundleLocalizations']==['en']
+    icon=APP/'Contents/Resources'/info['CFBundleIconFile']
+    assert icon.read_bytes()[:4]==b'icns'
+    for asset in ['FlowArtwork.png','FlowArtwork@2x.png']:
+        assert (APP/'Contents/Resources'/asset).read_bytes()[:8]==b'\x89PNG\r\n\x1a\n'
     for path,required in [(APP/'Contents/MacOS/Cauces',{'com.apple.security.app-sandbox','com.apple.security.files.user-selected.read-write'}),(APP/'Contents/MacOS/dialogue-worker',{'com.apple.security.app-sandbox','com.apple.security.inherit'})]:
         raw=subprocess.check_output(['codesign','-d','--entitlements','-','--xml',str(path)],stderr=subprocess.DEVNULL)
         entitlements=plistlib.loads(raw);assert all(entitlements.get(key) is True for key in required)

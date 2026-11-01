@@ -1,5 +1,117 @@
 # Validación de Cauces
 
+## Cauces 0.4.1 — Portabilidad del lector WAV (2026-10-28)
+
+- Error fotografiado reproducido con un WAV sintético válido al denegar la
+  reapertura de `/dev/fd`. El lector anterior falla; el lector nuevo pasa la
+  misma prueba. Esto identifica una causa reproducible compatible con el síntoma;
+  la causa efectiva en el equipo remoto requiere su nueva prueba.
+- `src/wav.cpp` conserva el descriptor abierto y verificado y lee con `pread`:
+  RAII, reintento de EINTR, lecturas cortas, EOF/truncación y offsets acotados.
+  Conserva O_NOFOLLOW/O_NONBLOCK/O_CLOEXEC, comprobación de archivo regular,
+  parser y conversiones. No se amplían permisos ni dependencias.
+- `tests/run_security_tests.sh`: 8/8 grupos CTest por arquitectura ARM64 y
+  x86_64/Rosetta, incluido control explícito de denegación de `/dev/fd`;
+  contratos Swift, protocolo, integridad, 100 WAV malformados y exportación pasan.
+  Casos añadidos: extremos PCM16, truncación tras header y cierre de descriptores
+  en errores repetidos. Revisión independiente sin bloqueantes materiales.
+- Probes del controller de producción y worker del ZIP extraído pasan en ambas
+  arquitecturas con App Sandbox: inspección, separación, reproducción, exportación,
+  cancelación y cierre. Tres WAV conservan 44100 Hz y 352800 muestras;
+  conexión de control denegada con EPERM en padre/hijo.
+- Intento adicional de combinar sandbox-exec con el App Sandbox del controller:
+  libsecinit aborta antes del entry point en ambas arquitecturas. No se cuenta
+  como prueba funcional. Se verifican por separado App Sandbox y lector bajo
+  denegación de `/dev/fd`; no se afirma haber combinado esas dos políticas.
+- GUI real del ZIP extraído: abre el fixture sintético PCM16/44100 Hz y termina
+  la separación; controles de reproducción y Export audio disponibles.
+- ZIP extraído fuera del repositorio: 19 archivos con hashes idénticos al bundle,
+  firmas, arquitecturas y rutas relativas verificados. Modelos, runtime ONNX,
+  biblioteca numérica e icono son byte a byte idénticos a 0.4.0.
+- Evidencia local: `evidence/cauces-portability-0.4.1/`. Distribución personal:
+  `dist/Cauces-0.4.1-universal.zip` y `dist/Cauces-0.4.1-SHA256.txt`.
+  Subida TLS verificada en el destino autorizado `/SONIDO`: ZIP de 190627808
+  bytes y checksum de 93 bytes, listado remoto presente y cola vacía.
+  Se preservan los paquetes anteriores. Sin commit/push.
+- Pendiente: prueba del mismo WAV en el Xeon W físico/Sequoia 15.7.5 y aceptación
+  auditiva profesional. La firma ad hoc sigue sin notarización.
+
+
+## Cauces 0.4.0 — Output Settings (2026-10-28)
+
+- Ventana nativa Settings por menú/⌘,: Output, System Default, Sample rate,
+  Device default, Apply/Cancel; paleta Flow. Persistencia por UID y frecuencia
+  solicitada; reloj escrito solo en Apply. Sin dependencias/entitlements nuevos.
+- Modelo probado con hardware simulado en ARM64 y x86_64: UID/default, persistencia,
+  NaN/Inf/frecuencias no admitidas, ausencia de dispositivo, negativa del driver,
+  fallo de routing después de escribir el clock, rollback, cambios externos,
+  desconexión, fallo de consulta sin usar caché antigua y bloqueo de Play en Apply.
+  Device default sigue una frecuencia cambiada externamente sin escribirla.
+- Core Audio registra un listener del destino antes de solicitar la frecuencia y
+  espera su confirmación. Apply verifica estabilidad y disponibilidad al finalizar;
+  solo entonces guarda las preferencias. Las notificaciones del engine llevan
+  generación y se procesan en main sin tareas antiguas sobre el graph nuevo.
+- Probes con sources de producción dentro de bundles firmados/sandboxed, ARM64 y
+  x86_64/Rosetta: Audio Bridge 2-A aplica **44100 Hz**, reproduce el fixture48kHz,
+  conserva duración/cursor/pista2, Apply pausa y vuelve a **48000 Hz**. Las dos
+  pruebas estrictas pasan sin permitir rechazo. Se restaura la frecuencia inicial.
+- Altavoces integrados: fixture44.1kHz reproducido a48kHz con transporte correcto;
+  la petición44.1kHz se revierte a48kHz. Un control sin AVAudioEngine y otro sin
+  App Sandbox reproducen la reversión: la causa externa/driver/clock permanece
+  desconocida. No se atribuye ese resultado al motor ni a las protecciones.
+  Se verifica rechazo sin persistir y rollback. No se cerraron otras apps ni se
+  relajó el sandbox para conseguir un resultado positivo.
+- Controller de producción + worker final: inspección, separación, playback,
+  exportación3WAV, cancelación y cierre pasan en ambos targets. Exports conservan
+  **44100 Hz y352800muestras** con hardware48kHz; conexión de control denegada
+  **EPERM** en padre/hijo. Los probes sustituyen el entry point GUI de una copia
+  de prueba y no se distribuyen dentro de Cauces.
+- Suites existentes `tests/run_security_tests.sh`: pasan7gruposCTest por target,
+  contratos Swift, transporte,100WAVmalformados, integridad y protocolo/exportación.
+  Revisión independiente: corregidos bloqueo duranteApply, callbacks antiguos,
+  confirmación post-routing y semántica Device default; sin bloqueantes finales.
+- GUI real: ⌘, abre Settings antes de importar; menú de dispositivos/frecuencias;
+  Cancel no guarda; Apply a44100 en Audio Bridge funciona; reiniciar conserva UID,
+  frecuencia y valor actual44100. Se restaura Audio Bridge48000 y System Default /
+  Device default al terminar las pruebas.
+- Evidencia local: `evidence/cauces-settings-0.4/`. ZIP0.4universal, firma/entitlements,
+  extracción/hashes y modelos comparados con0.3.0. Source C++ intacto desde0.3.0.
+- Pendientes: Intel físico/Sequoia15.7.5, desconexión física de interfaz externa,
+  otros drivers/clock externo/frecuencias y escucha profesional/roundtrip ProTools.
+  La app conserva firma ad hoc sin notarización. Ningún nuevo commit/push.
+
+
+## Cauces 0.3.0 — Flow UI (2026-10-28)
+
+- Interfaz SwiftUI nativa en inglés, artwork Flow, selección con check visible,
+  exportación denominada **Export audio…**, firma **© GuerraMagica Audio** e
+  icono ICNS real incluido en el bundle. Atajos ⌘O, Return, Escape, ⌘1–⌘4 y Espacio.
+- `scripts/build.sh`: compilación ARM64 y x86_64 con deployment target 15.0.
+  `tests/run_security_tests.sh`: todas las comprobaciones pasan: 7 grupos CTest
+  por arquitectura, estados/copia/transporte Swift, diagnóstico inglés, protocolo,
+  integridad de modelos y 100 WAV malformados reproducibles.
+- Pruebas del controller de producción y worker empaquetado en ambas arquitecturas
+  (Intel bajo Rosetta): separación, playback, tres exportaciones, cancelación y
+  cierre correctos. App Sandbox deniega la conexión TCP de control en padre e hijo
+  con `EPERM`. El ejecutable del probe sustituye la entrada GUI; no sustituye la
+  comprobación adicional de importación/exportación mediante paneles nativos.
+- UI real observada: abrir fixture sintético, progreso, alternar pista, reproducir/
+  pausar, seek accesible confirmado por cambio de posición, exportar tres WAV,
+  cancelación con Escape, error de RIFF en inglés y nombre largo en ventana mínima.
+- Paquete universal verificado: firma ad hoc/Hardened Runtime, sandbox sin permisos
+  de red, dos arquitecturas, dylibs relativas, modelos, artwork e icono. Los hashes
+  de todos los modelos coinciden con 0.2.0. Los nueve .cpp modificados son idénticos
+  a la base fuera de los literales de texto. Esta revisión no añade una nueva
+  afirmación de equivalencia numérica ni de mejora en calidad de audio.
+- Evidencia local: `evidence/cauces-ui-0.3/`; pruebas de preservación en
+  `preservation.json`, resultados de sandbox separados por arquitectura y capturas
+  nativas. Los primeros probes abortaron dentro del sandbox de Codex; se repitieron
+  fuera de ese límite para probar el App Sandbox propio del bundle y pasaron.
+- ZIP personal: `dist/Cauces-0.3.0-universal.zip`. Conserva la app/ZIP 0.2.0.
+  Pendientes: Mac Intel físico con Sequoia 15.7.5, aceptación auditiva profesional
+  y round trip en Pro Tools. La firma sigue siendo ad hoc; no está notarizada.
+
+
 27–28-10-2026. Pruebas locales en Apple M2, 16 GB, macOS 26.5.2. Objetivo de
 despliegue macOS 15.0. Intel físico con Sequoia 15.7.5: **pendiente**.
 

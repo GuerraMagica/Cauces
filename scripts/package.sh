@@ -20,6 +20,7 @@ cp vendor/json/LICENSE.MIT "$task_app/Contents/Resources/Licenses/nlohmann-json-
 /usr/bin/python3 scripts/model_manifest.py "$task_app/Contents/Resources/Models/manifest.json"
 cp resources/Model-NOTICE.txt "$task_app/Contents/Resources/Licenses/"
 cp src/separator.h "$task_app/Contents/Resources/"
+cp resources/Cauces.icns resources/FlowArtwork.png resources/FlowArtwork@2x.png "$task_app/Contents/Resources/"
 cp resources/Info.plist "$task_app/Contents/Info.plist"
 # Remove build-directory rpaths and install only paths relative to the bundle.
 /usr/bin/python3 scripts/bundle_paths.py "$task_app"

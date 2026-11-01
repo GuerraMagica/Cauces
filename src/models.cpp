@@ -15,7 +15,7 @@ struct Models::Impl {
     Ort::MemoryInfo memory = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
 
     Impl(const std::string& directory, int threads):assets(directory) {
-        if (threads < 1 || threads > 64) throw std::invalid_argument("Número de hilos inválido.");
+        if (threads < 1 || threads > 64) throw std::invalid_argument("The thread count is not valid.");
         env.DisableTelemetryEvents();
         options.SetIntraOpNumThreads(threads);
         options.SetInterOpNumThreads(1);
@@ -32,13 +32,13 @@ struct Models::Impl {
         return Ort::Value::CreateTensor<float>(memory, const_cast<float*>(v.data()), v.size(), shape.data(), shape.size());
     }
     static std::vector<float> copy(const Ort::Value& value, const std::vector<int64_t>& expected) {
-        if (!value.IsTensor()) throw std::runtime_error("El modelo no devolvió un tensor.");
+        if (!value.IsTensor()) throw std::runtime_error("The model did not return a tensor.");
         auto type = value.GetTensorTypeAndShapeInfo();
         if (type.GetElementType() != ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT || type.GetShape() != expected)
-            throw std::runtime_error("El modelo devolvió dimensiones inesperadas.");
+            throw std::runtime_error("The model returned unexpected dimensions.");
         auto data = value.GetTensorData<float>();
         std::vector<float> result(data, data + type.GetElementCount());
-        for (float sample : result) if (!std::isfinite(sample)) throw std::runtime_error("El modelo devolvió audio no finito.");
+        for (float sample : result) if (!std::isfinite(sample)) throw std::runtime_error("The model returned nonfinite audio.");
         return result;
     }
 };
@@ -48,7 +48,7 @@ Models::~Models() = default;
 std::string Models::version() { return OrtGetApiBase()->GetVersionString(); }
 
 std::vector<float> Models::separate(const std::vector<float>& audio) {
-    if (audio.size() < 512 || audio.size() > 128000) throw std::invalid_argument("Bloque de separación fuera de rango.");
+    if (audio.size() < 512 || audio.size() > 128000) throw std::invalid_argument("The separation block length is out of range.");
     auto input = impl->tensor(audio, {1, static_cast<int64_t>(audio.size())});
     const char* inputs[] = {"audio"};
     const char* outputs[] = {"voices"};
@@ -59,7 +59,7 @@ std::vector<float> Models::separate(const std::vector<float>& audio) {
 std::vector<float> Models::refine(const std::vector<float>& mixture,
                                   const std::vector<float>& guides, size_t frames) {
     if (!frames || frames > 301 || mixture.size() != 2*1025*frames || guides.size() != 3*2*1025*frames)
-        throw std::invalid_argument("Dimensiones inválidas del refinador.");
+        throw std::invalid_argument("The refiner dimensions are not valid.");
     std::array<Ort::Value, 2> inputs = {
         impl->tensor(mixture, {1, 2, 1025, static_cast<int64_t>(frames)}),
         impl->tensor(guides, {1, 3, 2, 1025, static_cast<int64_t>(frames)})};

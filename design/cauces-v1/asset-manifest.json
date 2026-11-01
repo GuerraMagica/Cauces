@@ -1,0 +1,313 @@
+{
+  "version": 1,
+  "status": "Design proposal; awaiting approval before app integration",
+  "application": "Cauces",
+  "owner_signature": "© GuerraMagica Audio",
+  "shipping_app_changed": false,
+  "final_logo_approved": false,
+  "font_files_bundled": false,
+  "external_resources": false,
+  "standard_artboard_points": [
+    1000,
+    700
+  ],
+  "minimum_artboard_points": [
+    860,
+    620
+  ],
+  "states": [
+    "empty",
+    "ready",
+    "processing",
+    "review",
+    "exported",
+    "error"
+  ],
+  "assets": [
+    {
+      "file": "assets/brand/flow-hero-dark.svg",
+      "width": 500,
+      "height": 175,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "assets/brand/flow-hero-light.svg",
+      "width": 500,
+      "height": 175,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "assets/brand/flow-mark-color.svg",
+      "width": 96,
+      "height": 96,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "assets/brand/flow-mark-mono.svg",
+      "width": 96,
+      "height": 96,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "assets/icons/arrow-right.svg",
+      "width": 24,
+      "height": 24,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "assets/icons/check.svg",
+      "width": 24,
+      "height": 24,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "assets/icons/close.svg",
+      "width": 24,
+      "height": 24,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "assets/icons/export.svg",
+      "width": 24,
+      "height": 24,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "assets/icons/file-audio.svg",
+      "width": 24,
+      "height": 24,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "assets/icons/folder.svg",
+      "width": 24,
+      "height": 24,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "assets/icons/open-audio.svg",
+      "width": 24,
+      "height": 24,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "assets/icons/pause.svg",
+      "width": 24,
+      "height": 24,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "assets/icons/play.svg",
+      "width": 24,
+      "height": 24,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "proposal/app-icon-concept.svg",
+      "width": 1024,
+      "height": 1024,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "proposal/control-states.svg",
+      "width": 1000,
+      "height": 490,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "control reference"
+    },
+    {
+      "file": "proposal/design-board.svg",
+      "width": 2160,
+      "height": 1020,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "artwork"
+    },
+    {
+      "file": "proposal/empty-compact.svg",
+      "width": 860,
+      "height": 620,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "screen"
+    },
+    {
+      "file": "proposal/empty.svg",
+      "width": 1000,
+      "height": 700,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "screen"
+    },
+    {
+      "file": "proposal/error.svg",
+      "width": 1000,
+      "height": 700,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "screen"
+    },
+    {
+      "file": "proposal/exported.svg",
+      "width": 1000,
+      "height": 700,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "screen"
+    },
+    {
+      "file": "proposal/processing.svg",
+      "width": 1000,
+      "height": 700,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "screen"
+    },
+    {
+      "file": "proposal/ready.svg",
+      "width": 1000,
+      "height": 700,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "screen"
+    },
+    {
+      "file": "proposal/review.svg",
+      "width": 1000,
+      "height": 700,
+      "format": "svg",
+      "editable": true,
+      "status": "proposed",
+      "role": "screen"
+    },
+    {
+      "file": "templates/control-states.svg",
+      "width": 1000,
+      "height": 490,
+      "format": "svg",
+      "editable": true,
+      "status": "template",
+      "role": "control reference"
+    },
+    {
+      "file": "templates/empty-compact.svg",
+      "width": 860,
+      "height": 620,
+      "format": "svg",
+      "editable": true,
+      "status": "template",
+      "role": "screen"
+    },
+    {
+      "file": "templates/empty.svg",
+      "width": 1000,
+      "height": 700,
+      "format": "svg",
+      "editable": true,
+      "status": "template",
+      "role": "screen"
+    },
+    {
+      "file": "templates/error.svg",
+      "width": 1000,
+      "height": 700,
+      "format": "svg",
+      "editable": true,
+      "status": "template",
+      "role": "screen"
+    },
+    {
+      "file": "templates/exported.svg",
+      "width": 1000,
+      "height": 700,
+      "format": "svg",
+      "editable": true,
+      "status": "template",
+      "role": "screen"
+    },
+    {
+      "file": "templates/processing.svg",
+      "width": 1000,
+      "height": 700,
+      "format": "svg",
+      "editable": true,
+      "status": "template",
+      "role": "screen"
+    },
+    {
+      "file": "templates/ready.svg",
+      "width": 1000,
+      "height": 700,
+      "format": "svg",
+      "editable": true,
+      "status": "template",
+      "role": "screen"
+    },
+    {
+      "file": "templates/review.svg",
+      "width": 1000,
+      "height": 700,
+      "format": "svg",
+      "editable": true,
+      "status": "template",
+      "role": "screen"
+    }
+  ],
+  "raster_previews": {
+    "directory": "previews",
+    "screen_scale": 2,
+    "source": "Editable SVG artboards; not production UI images"
+  },
+  "handback_instructions": "START-HERE.md"
+}

@@ -8,5 +8,5 @@ with tempfile.TemporaryDirectory(prefix='cauces-assets-') as tmp:
  for name in ['separator.onnx','refiner.onnx','weights.bin']:(Path(tmp)/name).write_bytes(b'unapproved synthetic model')
  error=ctypes.create_string_buffer(512)
  result=lib.ds_create(tmp.encode(),1,error,len(error))
- assert not result and b'integridad' in error.value,(result,error.value)
+ assert not result and b'integrity' in error.value,(result,error.value)
 print('Public C API rejects unapproved assets at the shared integrity gate')

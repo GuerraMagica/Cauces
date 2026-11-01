@@ -6,8 +6,8 @@ import UniformTypeIdentifiers
 @MainActor final class JobController: ObservableObject {
     @Published private(set) var state = JobState()
     @Published private(set) var source: URL?
-    @Published private(set) var info = "WAV · PCM16, PCM24 o float32 · Mono o dual mono · 8–48 kHz"
-    @Published private(set) var stage = "Abre un archivo para comenzar"
+    @Published private(set) var info = "Mono or identical dual mono · 8–48 kHz · Up to 30 min"
+    @Published private(set) var stage = "Open audio to get started"
     @Published private(set) var progress = 0.0
     private(set) var engineArchitecture: String?
     @Published private(set) var elapsed = ""
@@ -25,15 +25,15 @@ import UniformTypeIdentifiers
 
     func choose() {
         guard !state.busy else { return }
-        let panel = NSOpenPanel(); panel.allowedContentTypes = [.wav]; panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = false; panel.message = "Selecciona un WAV de hasta 30 minutos"
+        let panel = NSOpenPanel(); panel.title = "Open audio"; panel.prompt = "Open"; panel.allowedContentTypes = [.wav]; panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false; panel.message = "Choose a PCM16, PCM24 or float32 WAV. Mono or identical dual mono, 8–48 kHz, up to 30 minutes."
         if panel.runModal() == .OK, let url = panel.url { open(url) }
     }
     func open(_ url: URL) {
         guard !state.busy else { return }
         do {
             let id = try state.begin(.inspect); source = url; preview.clear(); stems = []; imported = nil; processingSource = nil; exportDirectory = nil; elapsed = ""; error = nil
-            stage = "Preparando copia local verificada"; progress = 0
+            stage = "Opening audio…"; progress = 0
             let directory = try PrivateDirectory(parent: FileManager.default.temporaryDirectory, prefix: "Cauces-input-")
             pendingImport = directory
             let group = importGroup; group.enter()
@@ -51,7 +51,7 @@ import UniformTypeIdentifiers
                     do {
                         self.pendingImport = nil
                         let (directory, copied) = try result.get(); self.imported = directory; self.processingSource = copied
-                        self.stage = "Leyendo cabecera WAV"
+                        self.stage = "Reading audio…"
                         try self.send(["cmd": "inspect", "source": copied.path, "id": id])
                     } catch { self.fail(error) }
                 }
@@ -66,8 +66,8 @@ import UniformTypeIdentifiers
             client.onEvent = { [weak self] event in self?.receive(event) }
             client.onExit = { [weak self] status in
                 guard let self else { return }; self.connection?.close(); self.connection = nil
-                self.state.cancel(); self.preview.clear(); self.stage = "El motor se ha cerrado"
-                self.error = "El motor se cerró inesperadamente (\(status)). Puedes volver a separar. Comprueba espacio disponible y que la app esté completa."
+                self.state.cancel(); self.preview.clear(); self.stage = "The audio engine has stopped"
+                self.error = "The audio engine stopped unexpectedly (\(status)). You can try again. Check available disk space and that the complete app has been copied."
             }
             connection = client
         }
@@ -76,7 +76,7 @@ import UniformTypeIdentifiers
     func separate() {
         guard state.canSeparate, let source = processingSource else { return }
         do {
-            let id = try state.begin(.separate); preview.clear(); exportDirectory = nil; elapsed = ""; error = nil; progress = 0; stage = "Preparando separación"
+            let id = try state.begin(.separate); preview.clear(); exportDirectory = nil; elapsed = ""; error = nil; progress = 0; stage = "Preparing separation…"
             // send creates a connection if this is a retry after cancellation.
             if connection == nil { try send(["cmd": "inspect", "source": source.path, "id": -1]) }
             try send(["cmd": "separate", "source": source.path, "workspace": connection!.workspace.path, "id": id])
@@ -86,19 +86,19 @@ import UniformTypeIdentifiers
         guard state.active == .separate || state.active == .inspect else { return }
         state.cancel(); pendingImport?.cancel(); importGroup.wait(); pendingImport?.cleanup(); pendingImport = nil
         preview.clear(); connection?.close(); connection = nil
-        stage = "Trabajo cancelado"; progress = 0; elapsed = ""
+        stage = "Separation cancelled"; progress = 0; elapsed = ""
     }
     func export() {
         guard state.canExport else { return }
-        let panel = NSOpenPanel(); panel.canChooseDirectories = true; panel.canChooseFiles = false
-        panel.canCreateDirectories = true; panel.message = "Se creará una carpeta con los tres stems float32. No se sobrescribirá una exportación existente."
+        let panel = NSOpenPanel(); panel.title = "Export audio"; panel.prompt = "Export"; panel.canChooseDirectories = true; panel.canChooseFiles = false
+        panel.canCreateDirectories = true; panel.message = "Save Voice 1, Voice 2 and Residual as three WAV files in a new folder. Existing exports are not overwritten."
         guard panel.runModal() == .OK, let destination = panel.url else { return }
         export(to: destination)
     }
     func export(to destination: URL) {
         guard state.canExport else { return }
         do {
-            let id = try state.begin(.export); stage = "Verificando y exportando los tres stems"; error = nil
+            let id = try state.begin(.export); stage = "Exporting audio…"; error = nil
             let access = destination.startAccessingSecurityScopedResource()
             do { try LocalFilePolicy.requireLocal(destination) } catch { if access { destination.stopAccessingSecurityScopedResource() }; throw error }
             let directory: PrivateDirectory
@@ -111,15 +111,15 @@ import UniformTypeIdentifiers
                 let result = Result { () -> URL in
                     try LocalFilePolicy.requireLocal(destination)
                     guard paths.count == 3 else { throw JobError.noResult }
-                    for (path, label) in zip(paths, ["voz_1", "voz_2", "residual"]) {
+                    for (path, label) in zip(paths, ["voice_1", "voice_2", "residual"]) {
                         try directory.copy(source: path, name: "\(name)_\(label).wav")
                     }
-                    return try directory.publish(name: "\(name)_separado")
+                    return try directory.publish(name: "\(name)_separated")
                 }
                 DispatchQueue.main.async { [weak self] in
                     guard let self, self.state.generation == id, self.state.active == .export else { return }
                     self.exportStaging = nil
-                    do { self.exportDirectory = try result.get(); _ = self.state.finish(id: id, success: true); self.stage = "Tres stems exportados y verificados" }
+                    do { self.exportDirectory = try result.get(); _ = self.state.finish(id: id, success: true); self.stage = "Audio exported" }
                     catch { self.fail(error) }
                 }
             }
@@ -135,25 +135,25 @@ import UniformTypeIdentifiers
             guard state.finish(id: id, success: true) else { return }
             let rate = event["rate"] as? Int ?? 0, channels = event["channels"] as? Int ?? 0
             let bits = event["bits"] as? Int ?? 0, seconds = event["duration"] as? Double ?? 0
-            info = "\(rate) Hz · \(bits) bit · \(channels == 1 ? "Mono" : "2 canales; se comprobará dual mono") · \(Self.time(seconds))"
-            if event["time_reference"] != nil { info += " · BWF" }; stage = "Listo para separar"
+            info = "\(rate) Hz · \(bits) bit · \(channels == 1 ? "Mono" : "2 channels; identical dual mono required") · \(Self.time(seconds))"
+            if event["time_reference"] != nil { info += " · BWF" }; stage = "Ready to separate"
         case "result":
             guard state.finish(id: id, success: true), let source = processingSource, let paths = event["stems"] as? [String] else { return }
             do {
                 stems = paths.map { URL(fileURLWithPath: $0) }; try preview.load(original: source, stems: stems)
-                progress = 1; stage = "Dos voces y residual listos"
-                if let seconds = event["process_seconds"] as? Double { elapsed = String(format: "Separación: %.1f s", seconds) }
+                progress = 1; stage = "Ready to listen"
+                if let seconds = event["process_seconds"] as? Double { elapsed = String(format: "Separation: %.1f s", seconds) }
             } catch { fail(error) }
         case "exported":
             guard state.finish(id: id, success: true), let path = event["directory"] as? String else { return }
-            exportDirectory = URL(fileURLWithPath: path); stage = "Tres stems exportados y verificados"
+            exportDirectory = URL(fileURLWithPath: path); stage = "Audio exported"
         case "error":
-            _ = state.finish(id: id, success: false); stage = "No se ha completado el trabajo"
-            error = event["message"] as? String ?? "El motor devolvió un error sin diagnóstico."
+            _ = state.finish(id: id, success: false); stage = "The operation could not be completed"
+            error = event["message"] as? String ?? "The audio engine returned an error without a diagnostic."
         default: break
         }
     }
-    private func fail(_ problem: Error) { state.failCurrent(); error = problem.localizedDescription; stage = "No se ha completado el trabajo" }
+    private func fail(_ problem: Error) { state.failCurrent(); error = AppMessages.describe(problem); stage = "The operation could not be completed" }
     func shutdown() { state.cancel(); pendingImport?.cancel(); exportStaging?.cancel(); importGroup.wait(); exportGroup.wait(); pendingImport?.cleanup(); exportStaging?.cleanup(); pendingImport = nil; exportStaging = nil; preview.clear(); connection?.close(); connection = nil; imported = nil; processingSource = nil; stems = [] }
     static func time(_ value: Double) -> String {
         let total = max(0, Int(value * 1000)); return String(format: "%02d:%02d.%03d", total/60000, total/1000%60, total%1000)

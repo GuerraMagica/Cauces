@@ -35,9 +35,9 @@ enum JobError: LocalizedError {
     case busy, noSource, noResult
     var errorDescription: String? {
         switch self {
-        case .busy: return "Espera a que termine el trabajo actual."
-        case .noSource: return "Abre primero un WAV compatible."
-        case .noResult: return "Separa primero el audio."
+        case .busy: return "Wait for the current operation to finish."
+        case .noSource: return "Open a supported WAV file first."
+        case .noResult: return "Separate the audio first."
         }
     }
 }

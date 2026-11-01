@@ -96,7 +96,7 @@ Spectrum spectrum(const float* input,size_t count) {
     return result;
 }
 std::vector<float> inverse_spectrum(const float* values,size_t frames,size_t count) {
-    if(!frames||1024+count>fft_size+(frames-1)*hop_size)throw std::invalid_argument("Solapamiento espectral inválido.");
+    if(!frames||1024+count>fft_size+(frames-1)*hop_size)throw std::invalid_argument("The spectral overlap is not valid.");
     size_t total=fft_size+(frames-1)*hop_size;
     std::vector<float> result(total),weight(total);
     const auto& window=hann();
@@ -113,7 +113,7 @@ std::vector<float> inverse_spectrum(const float* values,size_t frames,size_t cou
     }
     std::vector<float> trimmed(count);
     for(size_t i=0;i<count;++i) {
-        if(weight[1024+i]<=1e-12f)throw std::runtime_error("Solapamiento espectral inválido.");
+        if(weight[1024+i]<=1e-12f)throw std::runtime_error("The spectral overlap is not valid.");
         trimmed[i]=result[1024+i]/weight[1024+i];
     }
     return trimmed;

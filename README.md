@@ -1,4 +1,4 @@
-# Cauces — beta personal 0.2
+# Cauces — beta personal 0.4.1
 
 App local para macOS 15 o posterior, con ejecutables universales ARM64/Intel.
 Separa dos voces y un residual con **Cauces Multi-Speaker Separation ONNX v1
@@ -10,16 +10,26 @@ modelos, pesos, audios, capturas del original, herramientas de investigación
 y paquetes `.app`/ZIP no se distribuyen aquí. Los resultados documentados
 proceden de la validación local; no equivalen a pruebas ejecutadas por GitHub.
 
+La versión 0.3 incorpora el diseño Flow, textos propios en inglés y el icono Cauces.
+Los assets editables y la guía de entrega están en `design/cauces-v1/START-HERE.md`.
+Las teclas ⌘1–⌘4 cambian de pista y Espacio reproduce o pausa.
+
+La versión 0.4.1 corrige la apertura de WAV al trasladar la app: el lector usa
+el descriptor verificado directamente, sin reabrir `/dev/fd`. Los modelos y el
+procesamiento numérico conservan los mismos bytes que 0.4.0. La reproducción
+del error bajo una restricción controlada está verificada; la confirmación en
+el Intel físico del usuario sigue pendiente.
+
 ## Uso
 
-1. Abre `dist/Cauces.app` con doble clic.
+1. Abre `dist/Cauces-0.4.1/Cauces.app` con doble clic.
 2. Abre o arrastra un WAV mono o dual mono idéntico: PCM16, PCM24 o float32,
    entre 8 y 48 kHz, hasta 30 minutos.
-3. Pulsa **Separar voces**. Puedes cancelar; se descartan los resultados de ese
+3. Pulsa **Separate voices**. Puedes cancelar; se descartan los resultados de ese
    trabajo y sus temporales. Solo se procesa un archivo a la vez.
-4. Reproduce y cambia entre Original, Voz 1, Voz 2 y Residual. Las cuatro pistas
+4. Reproduce y cambia entre Original, Voice 1, Voice 2 y Residual. Las cuatro pistas
    comparten reloj y cursor; no hay normalización automática.
-5. **Exportar tres stems…** crea `<nombre>_separado` en la carpeta que elijas.
+5. **Export audio…** crea `<nombre>_separated` en la carpeta que elijas.
    Contiene tres WAV float32 con mismo sample rate, muestras y canales. Una
    carpeta final existente provoca un error; no se sobrescribe.
 
@@ -28,6 +38,31 @@ promete retención completa de iXML, UMID, historial, loudness o metadata
 propietaria. El residual puede contener diálogo; las etiquetas de hablante son
 estimaciones y pueden cambiar cuando la evidencia de solapamiento es débil.
 No incluye estéreo real, batch, plugins de DAW ni procesamiento en tiempo real.
+
+## Settings de reproducción
+
+Abre **Cauces → Settings…** (⌘,). **Output** selecciona una salida Core Audio
+solo para Cauces; **System Default** sigue la salida del sistema sin modificarla.
+**Sample rate** ofrece valores compatibles con el dispositivo. **Device default**
+sigue su reloj sin solicitar otro valor. **Apply** pausa la escucha, conserva el
+cursor y la pista seleccionada, verifica el resultado y guarda la selección por
+UID. **Cancel** descarta los cambios de la ventana.
+
+Una frecuencia explícita cambia el reloj compartido del dispositivo y puede
+afectar a otras apps. Una solicitud rechazada o que se revierte no se guarda;
+se intenta restaurar el clock anterior si Cauces lo cambió. Si falla esa
+restauración, el error lo indica. Los originales, la separación y los WAV
+exportados conservan su formato y sample rate; este ajuste solo afecta a escucha.
+La selección se recuerda al reiniciar, pero el reloj solo se escribe con Apply.
+Si otra aplicación cambia la frecuencia, se requiere volver a aplicarla. Si se
+desconecta una salida elegida expresamente, se pausa sin pasar silenciosamente a
+los altavoces. No se incorporan ajustes de entrada, MIDI ni buffer.
+
+En este equipo se verificaron 44,1/48 kHz en Audio Bridge 2-A, también bajo
+Rosetta, y 48 kHz en los altavoces integrados. Estos últimos revirtieron varias
+solicitudes de 44,1 kHz, incluso en una prueba independiente sin reproductor ni
+App Sandbox: se comprueba el rechazo seguro; su causa no está identificada.
+La compatibilidad efectiva de otros dispositivos/frecuencias depende del driver.
 
 ## Trasladarla al Intel
 
@@ -40,7 +75,7 @@ valida Sequoia ni su rendimiento.
 
 Prueba primero una copia de un diálogo corto que puedas usar localmente:
 abrir, separar, alternar pistas, buscar un punto, cancelar otro trabajo y
-exportar. Reabre los tres stems en tu DAW para confirmar alineación y BWF.
+exportar. Reabre los tres archivos WAV en tu DAW para confirmar alineación y BWF.
 Escucha respiraciones, consonantes, solapamientos, colas y matices del acting.
 La aceptación auditiva profesional requiere esa escucha y no se deduce del
 corpus sintético. No se afirma compatibilidad Pro Tools sin esa prueba.

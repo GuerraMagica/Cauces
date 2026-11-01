@@ -1,5 +1,6 @@
 // Test-only executable: not shipped in Cauces. Exercises real controller + packaged worker.
 import AppKit
+import AVFoundation
 import Darwin
 import Foundation
 
@@ -43,6 +44,12 @@ import Foundation
   precondition(controller.exportDirectory != nil, controller.error ?? "export failed")
   let paths = try fm.contentsOfDirectory(at: controller.exportDirectory!, includingPropertiesForKeys: nil)
   precondition(paths.count == 3)
+  let inputAudio = try AVAudioFile(forReading: source)
+  for path in paths {
+   let exported = try AVAudioFile(forReading: path)
+   precondition(exported.length == inputAudio.length && exported.processingFormat.sampleRate == inputAudio.processingFormat.sampleRate && exported.processingFormat.channelCount == inputAudio.processingFormat.channelCount)
+  }
+  trace("export sample rate=\(inputAudio.processingFormat.sampleRate) frames=\(inputAudio.length)")
   controller.separate();controller.cancel();precondition(!controller.state.busy)
   controller.shutdown()
   let pending = JobController()

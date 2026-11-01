@@ -20,6 +20,6 @@ enum LocalFilePolicy {
         guard values.volumeIsLocal == true, values.isUbiquitousItem != true else { throw denied() }
     }
     private static func denied() -> Error {
-        NSError(domain: "Cauces.LocalOnly", code: 1, userInfo: [NSLocalizedDescriptionKey: "Elige un archivo o carpeta de un disco local sin sincronización. Cauces rechaza ubicaciones de nube o red reconocidas y archivos pendientes de descarga."])
+        NSError(domain: "Cauces.LocalOnly", code: 1, userInfo: [NSLocalizedDescriptionKey: "Choose a local file or folder that is not synced to a cloud service. Recognized cloud or network locations and files awaiting download are not supported."])
     }
 }

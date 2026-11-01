@@ -19,7 +19,7 @@ import Foundation
         worker.onEvent = { events.append($0) }
         wait { events.contains { $0["type"] as? String == "ready" } }
         try worker.send(["cmd":"separate","source":fixtures.appendingPathComponent("chunk8_exact.wav").path,"workspace":worker.workspace.path,"id":1])
-        wait { events.contains { ($0["stage"] as? String) == "Separando voces" } }
+        wait { events.contains { ($0["stage"] as? String) == "Separating voices…" } }
         worker.close()
         wait { !FileManager.default.fileExists(atPath: worker.workspace.path) }
         events.removeAll()
