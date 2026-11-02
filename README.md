@@ -206,3 +206,14 @@ al aviso y al manifiesto del paquete 0.4.2; no modifica los tensores ni sustituy
 las licencias de los componentes de terceros. Las referencias históricas a una
 procedencia no identificada describen la información disponible en aquellas
 auditorías, anterior a esta aclaración.
+
+## Preparación comercial / Commercial preparation
+
+El [dossier bilingüe de distribución](docs/commercial/README.md) reúne manual,
+condiciones, privacidad, licencias, procedimientos de publicación y actas de
+aceptación. Es documentación de preparación con decisiones pendientes; no
+acredita que la beta esté autorizada para la venta ni modifica la app.
+
+The [bilingual distribution dossier](docs/commercial/README.md) contains the user
+guide, terms, privacy, licensing, release procedures and acceptance records. It is
+a preparation pack with open decisions, not commercial clearance or an app change.

@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "product": "Cauces",
+  "reference_version": "0.4.2",
+  "status": "personal_beta_not_commercially_signed",
+  "files": [
+    {
+      "path": "Contents/Frameworks/libdialogue_separator.dylib",
+      "bytes": 260800,
+      "sha256": "4229659d372156316da4d578bda32247b6ef9c78dec3715c62091e75ce68ae5e"
+    },
+    {
+      "path": "Contents/Frameworks/libonnxruntime.1.31.1.dylib",
+      "bytes": 73226912,
+      "sha256": "73e4629f8c861ced893dee8bbc552b9a02954664cdb4e88a8efc632e2861b298"
+    },
+    {
+      "path": "Contents/Info.plist",
+      "bytes": 1082,
+      "sha256": "0a73b4dd4619c8bbd82afdec43619c3239f0c1fd76afc92b8341b75c486f1fee"
+    },
+    {
+      "path": "Contents/MacOS/Cauces",
+      "bytes": 2264784,
+      "sha256": "75e20a55a314222b380e92afdf9968ba4c99e0bda9c8cde10bf466db9e9bbee4"
+    },
+    {
+      "path": "Contents/MacOS/dialogue-worker",
+      "bytes": 711360,
+      "sha256": "5a0d5d31b2d52c7d09b506f1d4b64e0a831ee3f1125e105fbcb7d55f7feec4bf"
+    },
+    {
+      "path": "Contents/Resources/Cauces.icns",
+      "bytes": 119523,
+      "sha256": "5eb88ac7009227819f15592712569925d2046a2651c69dbb9e049a0badf4c7d5"
+    },
+    {
+      "path": "Contents/Resources/FlowArtwork.png",
+      "bytes": 14322,
+      "sha256": "491c9b6cfab00d6d2976b126c2d59dbe1ce2a5dc2d3214d33f64f110af730295"
+    },
+    {
+      "path": "Contents/Resources/FlowArtwork@2x.png",
+      "bytes": 39181,
+      "sha256": "f3680f52757a3d2683ad302a08e90b629f8995139e3e28d7e6aea919c2ee5706"
+    },
+    {
+      "path": "Contents/Resources/Licenses/Model-NOTICE.txt",
+      "bytes": 856,
+      "sha256": "f9aac4e713c31f97789cd1e2328d4e77c7ad4e1973698f8a5edf027beb4639e8"
+    },
+    {
+      "path": "Contents/Resources/Licenses/ONNXRuntime-LICENSE",
+      "bytes": 1073,
+      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c"
+    },
+    {
+      "path": "Contents/Resources/Licenses/ONNXRuntime-ThirdPartyNotices.txt",
+      "bytes": 338088,
+      "sha256": "143764b952fdb1a7c69ce653bfba74a7744d6a8a573bfb73e235fba356c83de3"
+    },
+    {
+      "path": "Contents/Resources/Licenses/nlohmann-json-LICENSE",
+      "bytes": 1076,
+      "sha256": "86b998c792894ccb911a1cb7994f7a9652894e7a094c0b5e45be2f553f45cf14"
+    },
+    {
+      "path": "Contents/Resources/Models/manifest.json",
+      "bytes": 2379,
+      "sha256": "d2c88131fa2c2288687da69de55a0a9d115ed5228ded7f9658107416af51dd00"
+    },
+    {
+      "path": "Contents/Resources/Models/refiner.onnx",
+      "bytes": 78647,
+      "sha256": "4d4d38f4ca538924118b79daf5e24f293fec6f04e5a6eca2aa36e04c8f23f9cb"
+    },
+    {
+      "path": "Contents/Resources/Models/separator.onnx",
+      "bytes": 7331195,
+      "sha256": "ac763dcb1010ea8a23103ee799ceb61f394e91bd7a8280e1ef34d3f710ea5a82"
+    },
+    {
+      "path": "Contents/Resources/Models/separator_gpu.onnx",
+      "bytes": 3278367,
+      "sha256": "7c84c6de4624555fd1492e1ea3e8e70ef11cc898385f0d857ebd5239406b7574"
+    },
+    {
+      "path": "Contents/Resources/Models/weights.bin",
+      "bytes": 186334400,
+      "sha256": "b1491a04c97baaa30ebecfc7290fc70daa9404774ace4495065f5243b4188889"
+    },
+    {
+      "path": "Contents/Resources/separator.h",
+      "bytes": 1204,
+      "sha256": "d843f5fbee5d609755dea250647e53ebc3851e5dd1e82e0f9056b3b25469b6a3"
+    },
+    {
+      "path": "Contents/_CodeSignature/CodeResources",
+      "bytes": 6331,
+      "sha256": "5fa538b6a7613c5ed3044a99918a79f55a53e438a89bf309481b1cd2652e8c7c"
+    }
+  ]
+}

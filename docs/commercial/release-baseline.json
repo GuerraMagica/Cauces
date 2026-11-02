@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "document_date": "2026-11-02",
+  "version": "0.4.2",
+  "build": "6",
+  "code_commit": "33dc57ad10d00ca8e94c8046fb0537db5d11d193",
+  "archive": "Cauces-0.4.2-universal.zip",
+  "archive_bytes": 190627861,
+  "archive_sha256": "c0475f568066646582c9857c9fc91643048947f003c0b6d9782bb52bdf0c6d6c",
+  "architectures": [
+    "arm64",
+    "x86_64"
+  ],
+  "minimum_macos": "15.0",
+  "ui_languages": [
+    "en"
+  ],
+  "document_languages": [
+    "es",
+    "en"
+  ],
+  "signature": "ad_hoc_hardened_runtime_app_sandbox",
+  "notarized": false,
+  "physical_intel_validation": "pending",
+  "perceptual_acceptance": "pending",
+  "commercial_approval": "pending",
+  "historical_audio_suite_date": "2026-11-02",
+  "audio_tests_rerun_for_documentation": false,
+  "document_pack_contains_models_or_audio": false
+}

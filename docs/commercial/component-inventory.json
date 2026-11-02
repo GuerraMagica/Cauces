@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "scope": "direct_component_inventory_not_exhaustive_transitive_sbom",
+  "baseline": "0.4.2",
+  "components": [
+    {
+      "id": "cauces-app-dsp-artwork",
+      "supplier": "GuerraMagica Audio / project contributors",
+      "licence_status": "project_specific_terms_pending_adoption_and_rights_review",
+      "evidence": "repository; no project-wide licence grant inferred"
+    },
+    {
+      "id": "mossformer2-base",
+      "supplier": "Alibaba Speech Lab",
+      "licence_declared": "Apache-2.0",
+      "source": "https://huggingface.co/alibabasglab/MossFormer2_SS_16K",
+      "evidence": "upstream model card; recorded checkpoint fingerprint",
+      "conversion_tensor_equivalence_clearance": "not established by fingerprint alone"
+    },
+    {
+      "id": "onnx-conversion",
+      "supplier_declared": "GuerraMagica",
+      "evidence_kind": "project_owner_declaration",
+      "declaration_date": "2026-11-02",
+      "signed_rights_record": "pending",
+      "assets": [
+        "separator.onnx",
+        "separator_gpu.onnx",
+        "weights.bin"
+      ]
+    },
+    {
+      "id": "refiner",
+      "supplier_declared": "GuerraMagica",
+      "evidence_kind": "project_owner_declaration",
+      "declaration_date": "2026-11-02",
+      "signed_rights_record": "pending",
+      "assets": [
+        "refiner.onnx"
+      ]
+    },
+    {
+      "id": "onnxruntime",
+      "version": "1.31.1",
+      "supplier": "Microsoft",
+      "licence_declared": "MIT",
+      "source_commit": "6af1a932e2286d5c58166085d24c68783033edee",
+      "notice": "licenses/ONNXRuntime-ThirdPartyNotices.txt",
+      "transitive_dependency_sbom": "pending_per_architecture"
+    },
+    {
+      "id": "nlohmann-json",
+      "version": "3.11.3",
+      "supplier": "Niels Lohmann",
+      "licence_declared": "MIT",
+      "notice": "licenses/nlohmann-json-LICENSE.txt",
+      "notice_header_reconciliation": "pending"
+    },
+    {
+      "id": "apple-system-frameworks",
+      "supplier": "Apple",
+      "distribution": "system_linked_not_bundled_SDK",
+      "commercial_distribution_review": "Developer ID / Apple programme conditions pending"
+    }
+  ],
+  "model_label_inconsistency": {
+    "model_manifest_and_readme": "ONNX v1",
+    "model_notice_heading": "ONNX v3",
+    "resolution": "pending_owner_selection_before_commercial_release"
+  },
+  "licence_file_sha256": {
+    "Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "ONNXRuntime-LICENSE.txt": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+    "ONNXRuntime-ThirdPartyNotices.txt": "143764b952fdb1a7c69ce653bfba74a7744d6a8a573bfb73e235fba356c83de3",
+    "nlohmann-json-LICENSE.txt": "86b998c792894ccb911a1cb7994f7a9652894e7a094c0b5e45be2f553f45cf14",
+    "Model-NOTICE.txt": "f9aac4e713c31f97789cd1e2328d4e77c7ad4e1973698f8a5edf027beb4639e8"
+  }
+}
