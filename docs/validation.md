@@ -1,5 +1,33 @@
 # Validación de Cauces
 
+## Cauces 0.4.2 — Paquete actualizado (02-11-2026)
+
+- Bundle universal nuevo, build 6, sin sobrescribir las versiones anteriores.
+  Aviso y manifiesto atribuyen conversión ONNX y refinador a GuerraMagica según
+  declaración del titular del proyecto del 02-11-2026; se conserva la atribución
+  del modelo base y las obligaciones de componentes de terceros. La declaración
+  de autoría no se presenta como una comprobación jurídica independiente.
+- Modelos, pesos, biblioteca numérica, ONNX Runtime y worker son byte a byte
+  idénticos a 0.4.1. El manifiesto solo cambia la información de integración;
+  todos los demás campos se conservan. No se modifica código DSP ni inferencia.
+- Build ARM64/x86_64 y suite completa PASS: 8/8 CTest por arquitectura, transporte
+  Swift/protocolo en ambas, 36 rechazos individuales de assets y controles válidos,
+  100 WAV malformados y exportación. No se instala ni descarga ninguna dependencia.
+- Paquete firmado ad hoc con App Sandbox y sin permisos de red. Probes del
+  controller/worker pasan en ARM64 y x86_64/Rosetta: separación, playback,
+  exportación, cancelación y cierre; conexión EPERM en padre/hijo, WAV exportados
+  a 44100 Hz con 352800 muestras. El probe sustituye el entry point de una copia;
+  no prueba aquí la selección manual de archivos ni escucha profesional.
+- ZIP extraído fuera del repositorio: 19 archivos comparados por SHA-256 con el
+  bundle; pruebas de arquitectura, firma, dependencias y modelos PASS.
+- Artefactos locales: `dist/Cauces-0.4.2-universal.zip` (190627861 bytes) y
+  `dist/Cauces-0.4.2-SHA256.txt`. SHA-256 del ZIP:
+  `c0475f568066646582c9857c9fc91643048947f003c0b6d9782bb52bdf0c6d6c`.
+  Evidencia: `evidence/cauces-release-0.4.2/`.
+- Siguen pendientes Intel físico/Sequoia, diferencia perceptiva del reproductor,
+  escucha de acting y round trip Pro Tools. Esta entrega no mejora ni cambia la
+  separación. Firma sin notarización; modelos y ZIP permanecen fuera de GitHub.
+
 ## Regresiones de infraestructura — 01-11-2026
 
 - Cambios limitados a pruebas, documentación e instrucciones de Git. El código

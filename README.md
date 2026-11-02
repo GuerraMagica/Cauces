@@ -1,4 +1,4 @@
-# Cauces — beta personal 0.4.1
+# Cauces — beta personal 0.4.2
 
 App local para macOS 15 o posterior, con ejecutables universales ARM64/Intel.
 Separa dos voces y un residual con **Cauces Multi-Speaker Separation ONNX v1
@@ -22,7 +22,7 @@ el Intel físico del usuario sigue pendiente.
 
 ## Uso
 
-1. Abre `dist/Cauces-0.4.1/Cauces.app` con doble clic.
+1. Abre `dist/Cauces-0.4.2/Cauces.app` con doble clic.
 2. Abre o arrastra un WAV mono o dual mono idéntico: PCM16, PCM24 o float32,
    entre 8 y 48 kHz, hasta 30 minutos.
 3. Pulsa **Separate voices**. Puedes cancelar; se descartan los resultados de ese
@@ -199,3 +199,10 @@ checkpoint base coincide con **MossFormer2_SS_16K, Alibaba Speech Lab**:
 Apache-2.0; no prueba equivalencia de todos los tensores convertidos ni derechos
 sobre todos los assets.
 Esta versión estima exactamente dos voces y un residual.
+
+La conversión ONNX y el refinador fueron desarrollados por **GuerraMagica**, según
+declaración del titular del proyecto del 02-11-2026. Esta atribución se incorpora
+al aviso y al manifiesto del paquete 0.4.2; no modifica los tensores ni sustituye
+las licencias de los componentes de terceros. Las referencias históricas a una
+procedencia no identificada describen la información disponible en aquellas
+auditorías, anterior a esta aclaración.

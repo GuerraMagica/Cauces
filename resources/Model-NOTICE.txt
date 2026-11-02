@@ -1,14 +1,14 @@
 Cauces Multi-Speaker Separation ONNX v3 (selective FP16)
 
-This is a local integration name for existing converted ONNX assets, not a claim
-that Cauces trained the weights. The package processes exactly two speakers and
-a residual using CPU inference.
+This is a local integration name. The package processes exactly two speakers and
+a residual using CPU inference. The ONNX conversion and refiner were developed
+by GuerraMagica, according to the project owner's declaration on 2026-11-02.
+This attribution does not claim ownership of third-party base-model weights.
 
 The source checkpoint SHA-256 recorded in the manifest matches the checkpoint of
 MossFormer2_SS_16K, Alibaba Speech Lab:
 https://huggingface.co/alibabasglab/MossFormer2_SS_16K
 The upstream model card identifies Apache-2.0. A checkpoint fingerprint does not
 prove tensor-by-tensor equivalence of the ONNX conversion or establish rights to
-all converted assets. Public provenance of the refiner checkpoint is unidentified.
-This personal build does not grant redistribution rights to third-party assets.
+third-party assets. Their licenses and notices continue to apply.
 Asset fingerprints remain in Models/manifest.json and are verified before use.
