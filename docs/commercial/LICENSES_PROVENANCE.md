@@ -1,6 +1,26 @@
 # Licencias y procedencia / Licensing and provenance
 
-Versión documental / Document revision: 1.1 | 2026-11-04 | Referencia / Baseline: Cauces 0.4.2, build 6
+Versión documental / Document revision: 1.2 | 2026-11-04 | Referencia / Baseline: Cauces 0.4.2, build 6
+
+## ES / EN - Licencia del material propio / Original-material licence
+
+El titular aprobó el 04-11-2026 **GPL-3.0-only** para el código, documentación y
+artwork propios del repositorio. Ver [LICENSE](../../LICENSE),
+[COPYRIGHT](../../COPYRIGHT) y [alcance](../../LICENSE_SCOPE.md). Bibliotecas,
+textos de licencia de terceros, modelos, conversiones, refinador y pesos mantienen
+su tratamiento separado. Los derechos pendientes del refinador siguen pendientes.
+
+El titular declara que no ha incorporado aportaciones adicionales de otros autores
+aparte de los componentes de terceros ya identificados. Se registra como D, no
+como verificación independiente de titularidad ni como un DCO retroactivo.
+Las futuras contribuciones se rigen por [CONTRIBUTING](../../CONTRIBUTING.md).
+
+On 2026-11-04 the owner approved **GPL-3.0-only** for original repository code,
+documentation and artwork. See the grant, licence and scope linked above.
+Third-party libraries/licence texts and model assets remain separate. Refiner
+rights are still pending. The owner declares no additional work by other authors
+beyond the identified third-party components; this is a D statement, not
+independent ownership verification or retroactive DCO certification.
 
 ## ES - Estado y alcance
 
@@ -31,7 +51,7 @@ con Cauces. No se incorporan modelos, pesos, Python, Torch o MLX de ese proyecto
 This inventory records direct components and available evidence; it is NOT an
 exhaustive transitive SBOM or legal clearance. Exact hashes are in
 asset-manifest.json, inventory in component-inventory.json and sources S1-S5/S10
-in SOURCES. A proprietary app licence does not replace dependency licences.
+in SOURCES. The project's GPL grant does not replace dependency licences.
 
 D: GuerraMagica declared authorship of the ONNX conversion and refiner on
 2026-11-02. Attach the signed declaration, sources/exporters, contributor records
@@ -50,8 +70,9 @@ payload. No LAB model, weight, Python, Torch or MLX runtime is added here.
 
 ## ES / EN - Componentes directos / Direct components
 
-- App, DSP y artwork / App, DSP and artwork: código propio del proyecto; titularidad
-  y contribuciones a confirmar / project-specific code; confirm rights/contributors.
+- App, DSP, documentación y artwork propios / Original app, DSP, documentation and
+  artwork: GPL-3.0-only, aprobación del titular del 04-11-2026 / owner approval
+  dated 2026-11-04; declaración de contribuciones arriba / contributor statement above.
 - MossFormer2_SS_16K: Alibaba Speech Lab; Apache-2.0 declarada upstream / declared upstream.
 - Conversión / ONNX conversion: GuerraMagica, declaración del titular / owner declaration.
 - refiner.onnx: GuerraMagica, declaración del titular / owner declaration.
@@ -98,9 +119,8 @@ este refinador.
 autorización aplicable.
 
 Esta nota documenta el estado de la información disponible y no concede permisos
-de redistribución. Una eventual licencia general del proyecto no debe interpretarse
-como una concesión de derechos sobre estos assets mientras su inclusión y alcance
-no se establezcan expresamente. Su incorporación a una distribución pública queda
+de redistribución. La concesión GPL-3.0-only del material propio del proyecto no
+cubre estos assets ni acredita sus permisos. Su incorporación a una distribución pública queda
 pendiente de resolver y documentar estos derechos.
 
 Verificación local del 04-11-2026: hashes y referencias de los inicializadores
@@ -144,8 +164,8 @@ MossFormer2 base-model licence is not presumed to cover this refiner.
 authorisation.
 
 This note records the available information and grants no redistribution rights.
-A future project-wide licence must not be interpreted as licensing these assets
-unless their inclusion and scope are expressly established. Their inclusion in a
+The project's GPL-3.0-only grant for original material does not cover these assets
+or establish their permissions. Their inclusion in a
 public distribution remains pending resolution and documentation of these rights.
 
 Local verification on 2026-11-04 covered hashes and external-initializer references
@@ -168,8 +188,8 @@ comprobar que la futura distribución lo asocia inequívocamente al modelo base.
 ThirdPartyNotices de ORT es una referencia upstream amplia: determinar qué
 componentes se compilaron realmente y completar un SBOM trazable por arquitectura.
 Revisar si el código upstream modificado requiere fuentes, avisos o condiciones
-adicionales. No inventar una licencia de GuerraMagica ni aplicar MIT por defecto
-al proyecto propio. El borrador contractual no revoca derechos open source.
+adicionales. La concesión GPL-3.0-only del material propio no relicencia estos
+componentes. El borrador contractual no revoca derechos open source.
 
 ## EN - Notices to accompany the package
 
@@ -184,5 +204,6 @@ clearly associates it with the base model.
 
 ORT ThirdPartyNotices is a broad upstream reference: determine actual compiled
 components and complete an architecture-traceable SBOM. Check source/notice
-requirements of modified upstream code. Do not invent a GuerraMagica licence or
-apply MIT to the project by default. Draft terms do not revoke open-source rights.
+requirements of modified upstream code. The GPL-3.0-only grant for original
+material does not relicense these components. Draft terms do not revoke
+open-source rights.

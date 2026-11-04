@@ -3,12 +3,24 @@
   "scope": "direct_component_inventory_not_exhaustive_transitive_sbom",
   "baseline": "0.4.2",
   "provenance_revision_date": "2026-11-04",
+  "current_source_licence": {
+    "spdx": "GPL-3.0-only",
+    "owner_approval_date": "2026-11-04",
+    "licence_file": "../../LICENSE",
+    "grant_file": "../../COPYRIGHT",
+    "scope_file": "../../LICENSE_SCOPE.md",
+    "historical_package_relicensed_or_rebuilt": false
+  },
   "components": [
     {
       "id": "cauces-app-dsp-artwork",
       "supplier": "GuerraMagica Audio / project contributors",
-      "licence_status": "project_specific_terms_pending_adoption_and_rights_review",
-      "evidence": "repository; no project-wide licence grant inferred"
+      "licence_declared": "GPL-3.0-only",
+      "licence_status": "owner_approved_for_original_code_documentation_artwork",
+      "evidence": "owner approval and contribution-origin declaration, 2026-11-04; COPYRIGHT and LICENSE_SCOPE.md",
+      "additional_third_party_contributions": "none_beyond_identified_components_according_to_owner_declaration",
+      "independent_ownership_verification": "not_asserted",
+      "future_contribution_policy": "../../CONTRIBUTING.md"
     },
     {
       "id": "mossformer2-base",

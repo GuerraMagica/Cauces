@@ -33,9 +33,9 @@ b1491a04c97baaa30ebecfc7290fc70daa9404774ace4495065f5243b4188889
 Applicable asset licence: undetermined from the documentation examined. The
 MossFormer2 base-model licence is not presumed to cover this refiner.
 Redistribution permission: pending evidence of an applicable licence or
-authorisation. This notice grants no redistribution rights. A future project-wide
-licence must not be interpreted as licensing these assets unless their inclusion
-and scope are expressly established. Their inclusion in a public distribution
+authorisation. This notice grants no redistribution rights. The project's
+GPL-3.0-only grant for original material does not cover these assets or establish
+their permissions. Their inclusion in a public distribution
 remains pending resolution and documentation of these rights.
 
 This source notice is updated for future packaging. The existing Cauces 0.4.2

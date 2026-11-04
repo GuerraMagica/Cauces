@@ -2,6 +2,22 @@
 
 Versión documental / Document revision: 1.0 | 2026-11-02 | Cauces 0.4.2, build 6
 
+## Actualización Open Source / Open Source update - 2026-11-04
+
+La licencia del código, documentación y artwork propios está decidida y aplicada:
+**GPL-3.0-only**. Ver [alcance](../../LICENSE_SCOPE.md) y
+[contribuciones](../../CONTRIBUTING.md). Se registra la declaración del titular
+sobre ausencia de aportaciones adicionales de otros autores. Esto no cierra los
+derechos de modelos/pesos ni autoriza distribuir el paquete completo. Las
+decisiones comerciales siguientes se refieren a una posible oferta y soporte;
+no permiten restringir los derechos GPL mediante puestos o plazos de uso.
+
+The original code, documentation and artwork licence is adopted: **GPL-3.0-only**.
+See scope and contributions above. The owner's declaration about no additional
+third-party contributions is recorded. Model/weight rights and full-package
+distribution remain unresolved. The commercial decisions below concern a possible
+offer and support, not seat or time restrictions on GPL rights.
+
 ## ES - Decisión actual
 
 **No autorizado para venta por este dossier.** La documentación preparatoria está

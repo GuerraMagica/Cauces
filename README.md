@@ -10,6 +10,23 @@ modelos, pesos, audios, capturas del original, herramientas de investigación
 y paquetes `.app`/ZIP no se distribuyen aquí. Los resultados documentados
 proceden de la validación local; no equivalen a pruebas ejecutadas por GitHub.
 
+## Licencia y colaboración
+
+El código, la documentación y el artwork propios se ofrecen bajo
+**GNU GPL versión 3 únicamente (`GPL-3.0-only`)**. Consulta [LICENSE](LICENSE),
+[COPYRIGHT](COPYRIGHT) y el [alcance y las excepciones](LICENSE_SCOPE.md).
+Las bibliotecas mantienen sus licencias. Esta concesión no cubre modelos,
+conversiones ONNX, refinador ni pesos, cuyos avisos y derechos pendientes
+se documentan por separado. Los paquetes históricos no se han regenerado.
+
+Puedes ayudar con errores reproducibles, documentación, diseño, pruebas y código:
+[guía para contribuir](CONTRIBUTING.md). Las futuras contribuciones propias se
+ofrecen bajo la misma licencia y requieren sign-off del [DCO 1.1](DCO).
+La declaración del titular del 04-11-2026 sobre la ausencia de aportaciones
+adicionales de otros autores se registra en LICENSE_SCOPE.md.
+
+## Versión de referencia
+
 La versión 0.3 incorpora el diseño Flow, textos propios en inglés y el icono Cauces.
 Los assets editables y la guía de entrega están en `design/cauces-v1/START-HERE.md`.
 Las teclas ⌘1–⌘4 cambian de pista y Espacio reproduce o pausa.
