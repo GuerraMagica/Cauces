@@ -1,5 +1,28 @@
 # Validación de Cauces
 
+## Corrección de procedencia y metadatos — 04-11-2026
+
+- README, aviso fuente e inventario dejan de atribuir como autoría acreditada la
+  conversión ONNX y el refinador al titular. Se registra la coincidencia SHA-256
+  con una distribución local de terceros y su declaración Apache-2.0 para el
+  modelo de banda baja. El alcance sobre aportaciones específicas del exportador
+  y los permisos del refinador siguen pendientes; ver
+  [procedencia](commercial/LICENSES_PROVENANCE.md).
+- `scripts/model_manifest.py` genera autores desconocidos como `null`, separa la
+  licencia base del estado del refinador y conserva ONNX v1 como etiqueta local.
+  Prueba temporal ejecutada sobre un manifiesto sintético: rechazo observado con
+  el generador anterior; PASS tras la corrección. Comprueba ámbitos de licencia,
+  preservación de campos fuera de `name`/`integration` e idempotencia.
+- Ejecución adicional sobre una copia temporal del manifiesto real: todos los
+  campos ajenos a `name`/`integration` se conservan. El original no se modifica.
+  JSON del inventario, hashes de avisos históricos/actuales y enlaces locales
+  modificados comprobados. `git diff --check` sin errores.
+- Comparación SHA-256 de 43 archivos protegidos: modelos, manifiesto original,
+  fuentes de procesamiento, licencias originales, entitlements, CMake,
+  empaquetador y ZIP 0.4.2 permanecen intactos. No se ha compilado ni empaquetado
+  una app nueva, ejecutado inferencia o repetido la escucha/suite de audio por
+  estos cambios documentales y de metadatos.
+
 ## Pruebas públicas reproducibles — 04-11-2026
 
 - Nuevo `tests/run_public_tests.sh [arm64|x86_64|all]`, con arquitectura actual
@@ -51,10 +74,11 @@
 ## Cauces 0.4.2 — Paquete actualizado (02-11-2026)
 
 - Bundle universal nuevo, build 6, sin sobrescribir las versiones anteriores.
-  Aviso y manifiesto atribuyen conversión ONNX y refinador a GuerraMagica según
-  declaración del titular del proyecto del 02-11-2026; se conserva la atribución
+  Aviso y manifiesto históricos atribuyen conversión ONNX y refinador a GuerraMagica
+  según declaración del titular del proyecto del 02-11-2026; se conserva la atribución
   del modelo base y las obligaciones de componentes de terceros. La declaración
-  de autoría no se presenta como una comprobación jurídica independiente.
+  de autoría no se presenta como una comprobación jurídica independiente y queda
+  corregida en las fuentes actuales por la revisión del 04-11-2026, arriba.
 - Modelos, pesos, biblioteca numérica, ONNX Runtime y worker son byte a byte
   idénticos a 0.4.1. El manifiesto solo cambia la información de integración;
   todos los demás campos se conservan. No se modifica código DSP ni inferencia.

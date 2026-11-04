@@ -27,8 +27,11 @@ creados por este trabajo. No se ha cambiado ni vuelto a empaquetar la app.
 
 Estados: **V** = verificado en código/artefactos; **H** = ejecución histórica
 registrada; **D** = declaración del titular; **P** = pendiente de decisión o prueba.
-La declaración de GuerraMagica sobre conversión/refinador se conserva como D;
-no se sustituye por la antigua descripción de autor desconocido.
+Corrección del 04-11-2026: la atribución anterior de conversión/refinador no se
+adopta como autoría verificada. Los assets proceden de una distribución local de
+terceros; Apache-2.0 está declarada para el modelo de banda baja, con el alcance
+sobre aportaciones específicas de exportación pendiente. Los permisos del
+refinador siguen pendientes. Ver [procedencia actual](LICENSES_PROVENANCE.md).
 
 Orden recomendado: leer PRODUCT y USER_GUIDE; completar publisher-profile;
 resolver LICENSES_PROVENANCE y LEGAL_REVIEW; revisar los borradores con asesoría;
@@ -46,8 +49,11 @@ This work creates no store, price, subscription, SLA or certification and does n
 change or repackage the application.
 
 Status: **V** = verified in code/artifacts; **H** = recorded historical execution;
-**D** = owner declaration; **P** = pending decision or test. GuerraMagica's
-conversion/refiner authorship remains a D statement, not an unknown-author claim.
+**D** = owner declaration; **P** = pending decision or test. Correction dated
+2026-11-04: earlier conversion/refiner attribution is not adopted as verified
+authorship. Assets came from a local third-party distribution. Apache-2.0 is
+declared for the low-band model; scope over specific export contributions and
+refiner permissions remain pending. See the current provenance document.
 
 Read PRODUCT and USER_GUIDE; complete publisher-profile; resolve
 LICENSES_PROVENANCE and LEGAL_REVIEW; have the drafts reviewed; then run

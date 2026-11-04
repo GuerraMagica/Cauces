@@ -1,42 +1,57 @@
-Cauces Multi-Speaker Separation ONNX v3 (selective FP16)
+Cauces Multi-Speaker Separation ONNX v1 (selective FP16)
 
-This is a local integration name. The package processes exactly two speakers and
-a residual using CPU inference. The ONNX conversion and refiner were developed
-by GuerraMagica, according to the project owner's declaration on 2026-11-02.
-This attribution does not claim ownership of third-party base-model weights.
+This is a local integration name, not an authorship or ownership claim over the
+model assets. The package processes two estimated voices and a residual using
+CPU inference. Assets came from a local third-party distribution; recorded
+fingerprints identify the files, not redistribution permissions.
 
-The source checkpoint SHA-256 recorded in the manifest matches the checkpoint of
-MossFormer2_SS_16K, Alibaba Speech Lab:
+Low-band separation model: Alibaba Speech Lab, MossFormer2_SS_16K.
 https://huggingface.co/alibabasglab/MossFormer2_SS_16K
-The upstream model card identifies Apache-2.0. A checkpoint fingerprint does not
-prove tensor-by-tensor equivalence of the ONNX conversion or establish rights to
-third-party assets. Their licenses and notices continue to apply.
-Asset fingerprints remain in Models/manifest.json and are verified before use.
+Code: https://github.com/modelscope/ClearerVoice-Studio
+Source revision recorded by the asset distribution:
+6b3774dc79c46ae8bed2a4fa5f706f0ac8c75c61
 
-Provisional high-frequency refiner notice (2026-11-04)
+Both the upstream model card and the source distribution declare Apache-2.0 for
+the low-band model. Apache-2.0 permits source/object forms and modifications;
+conversion to ONNX alone does not require a separate licence. The declaration's
+scope over specific export contributions remains to be clarified. This is not
+an absence of any licence declaration. Retain the applicable Apache-2.0 text,
+attributions and modification notices.
 
-Immediate provenance: local Cauces 0.4.2 distribution, GuerraMagica Audio.
-Declared refiner authorship: GuerraMagica, according to the project owner's
-declaration dated 2026-11-02. Documentary evidence of the underlying weights'
-authorship, ownership and redistribution rights remains pending.
+Recorded export changes: dynamic padding, cached position tables, stable
+normalization reductions, corrected high-frequency pooling edges, equivalent
+GPU operations and exact-length masking; native DSP handles decoder padding.
+Selected learned separator weights and 384 internal learned affine operations
+use FP16 on the GPU; CPU arithmetic, normalization, attention products, length
+handling and the high-frequency refiner retain higher precision. These are
+descriptions recorded by the asset distribution, not claims of Cauces authorship
+or independent verification of the exporter.
 
-Assets concerned: refiner.onnx and the 13 external tensors it references in
-weights.bin. That file also contains separator data and is not attributed wholly
-to the refiner. The refiner performs spectral refinement using the mixture and
-separation guides.
+Recorded source checkpoint SHA-256:
+00a3a48bda492db1e829b85dd443f8f43a43039a3e90f1a24962ea9caf14a11a
+This matches the fingerprint published for the upstream checkpoint, but does
+not prove tensor-by-tensor equivalence of the exported assets.
+
+High-frequency refiner: refiner.onnx and its 13 external tensors in weights.bin.
+That file also contains separator data. The refiner uses the mixture and
+separation guides for spectral refinement. Its authorship, weight ownership,
+applicable licence and redistribution permission are not established by the
+documentation examined. The base-model licence is not presumed to cover it.
 
 SHA-256 of refiner.onnx:
 4d4d38f4ca538924118b79daf5e24f293fec6f04e5a6eca2aa36e04c8f23f9cb
 SHA-256 of the complete weights.bin file:
 b1491a04c97baaa30ebecfc7290fc70daa9404774ace4495065f5243b4188889
 
-Applicable asset licence: undetermined from the documentation examined. The
-MossFormer2 base-model licence is not presumed to cover this refiner.
-Redistribution permission: pending evidence of an applicable licence or
-authorisation. This notice grants no redistribution rights. The project's
-GPL-3.0-only grant for original material does not cover these assets or establish
-their permissions. Their inclusion in a public distribution
-remains pending resolution and documentation of these rights.
+The project's GPL-3.0-only grant for original material does not cover these
+assets or establish their permissions. This notice grants no new asset rights.
+Public distribution including the refiner remains pending evidence of an
+applicable licence or authorisation.
+ONNX Runtime and other libraries retain their separate licences and notices.
+The runtime licence does not determine the licence of models it executes.
 
-This source notice is updated for future packaging. The existing Cauces 0.4.2
-package and its historical notice have not been changed.
+Provenance correction: 2026-11-04. Earlier project-owner attribution of the
+conversion and refiner to GuerraMagica is not adopted as verified authorship.
+This source notice is for future packaging; existing packages and their
+historical notices remain unchanged. Original third-party notices and local
+provenance evidence are retained.

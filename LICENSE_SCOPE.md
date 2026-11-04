@@ -38,7 +38,8 @@ atribuciones ni restringe los usos permitidos por la GPL o la legislación aplic
 El titular declaró el 04-11-2026 que no ha incorporado aportaciones adicionales de
 otros autores aparte de los componentes de terceros ya identificados. Se registra
 como declaración del titular, no como una comprobación independiente de todos los
-derechos. La selección de GPL no resuelve las incertidumbres sobre modelos o pesos.
+derechos. Esa declaración no acredita la autoría de la conversión ONNX ni del
+refinador. La selección de GPL no resuelve las incertidumbres sobre modelos o pesos.
 
 Esta decisión se aplica al material propio del repositorio actual. No cambia
 retroactivamente los avisos de los paquetes históricos ni autoriza la publicación
@@ -75,8 +76,8 @@ trademark, official-representation or endorsement rights.
 
 On 2026-11-04 the owner declared that no additional work by other authors had
 been incorporated beyond the already identified third-party components. This is
-an owner declaration, not independent rights verification. Model and weight
-uncertainties remain unresolved.
+an owner declaration, not independent rights verification or evidence of ONNX
+conversion/refiner authorship. Model and weight uncertainties remain unresolved.
 
 This decision applies to original material in the current repository. Historical
 package notices remain unchanged; no 0.4.2 package was rebuilt and no release of

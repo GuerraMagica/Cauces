@@ -11,8 +11,8 @@ en una sociedad. Completar publisher-profile y revisar con un profesional
 competente en los mercados reales antes de publicar contratos o cobrar.
 
 Prioridades: titularidad de código/artwork/conversión/refinador y contribuyentes;
-licencia de modelo base y dependencias; coherencia v1/v3; información precontractual,
-precio/impuestos/factura; conformidad/actualizaciones; desistimiento digital;
+licencia de modelo base y dependencias; coherencia de avisos actuales e históricos;
+información precontractual, precio/impuestos/factura; conformidad/actualizaciones; desistimiento digital;
 protección de datos comerciales, proveedores, transferencias y cookies reales.
 El registro de la obra puede aportar evidencia pero no sustituye derechos de
 terceros. No declaramos inexistencia de marcas similares a Cauces: buscar y valorar
@@ -27,8 +27,8 @@ publisher-profile and consult a qualified professional for actual markets before
 publishing terms or taking payment.
 
 Priorities: rights in code/artwork/conversion/refiner and contributor assignments;
-base-model/dependency licences; v1/v3 naming; precontract information, taxes and
-invoicing; conformity/updates; digital withdrawal; business privacy, processors,
+base-model/dependency licences; current/historical notice consistency;
+precontract information, taxes and invoicing; conformity/updates; digital withdrawal; business privacy, processors,
 transfers and actual cookies. Registration may add evidence but does not replace
 third-party rights. No Cauces trademark clearance has been performed: review
 marks/domains for intended territories before launch investment.

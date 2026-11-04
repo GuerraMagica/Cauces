@@ -225,10 +225,10 @@ conservan sus propias licencias y avisos.
 
 El refinador y sus tensores externos en `weights.bin` tienen un
 [aviso provisional de procedencia y derechos](docs/commercial/LICENSES_PROVENANCE.md#es---refinador-de-alta-frecuencia-de-cauces).
-Se conserva la autoría declarada por GuerraMagica; la titularidad de los pesos,
-su licencia aplicable y el permiso de redistribución están pendientes de
-acreditación documental. La licencia del modelo base no se extiende por
-presunción al refinador. El aviso fuente se ha actualizado para futuros
+La autoría del refinador, la titularidad de sus pesos, su licencia y el permiso de
+redistribución no están acreditados con la documentación examinada. La licencia
+Apache-2.0 del modelo base no se extiende por presunción al refinador. El aviso
+fuente y el generador de metadatos corrigen la atribución anterior para futuros
 empaquetados; el paquete 0.4.2 existente permanece intacto.
 
 ## Privacidad y seguridad
@@ -264,17 +264,18 @@ proceso anfitrión; no se sandboxea por cargarla.
 
 El nombre del modelo es una denominación de integración. La huella del
 checkpoint base coincide con **MossFormer2_SS_16K, Alibaba Speech Lab**:
-[ficha oficial del modelo](https://huggingface.co/alibabasglab/MossFormer2_SS_16K). La ficha identifica
-Apache-2.0; no prueba equivalencia de todos los tensores convertidos ni derechos
-sobre todos los assets.
+[ficha oficial del modelo](https://huggingface.co/alibabasglab/MossFormer2_SS_16K).
+La ficha y el aviso de la distribución de origen declaran **Apache-2.0** para el
+modelo de banda baja. La conversión a ONNX no exige por sí misma otra licencia;
+queda por precisar el alcance sobre las aportaciones específicas del exportador.
+El hash no prueba equivalencia de todos los tensores ni derechos sobre otros assets.
 Esta versión estima exactamente dos voces y un residual.
 
-La conversión ONNX y el refinador fueron desarrollados por **GuerraMagica**, según
-declaración del titular del proyecto del 02-11-2026. Esta atribución se incorpora
-al aviso y al manifiesto del paquete 0.4.2; no modifica los tensores ni sustituye
-las licencias de los componentes de terceros. Las referencias históricas a una
-procedencia no identificada describen la información disponible en aquellas
-auditorías, anterior a esta aclaración.
+La revisión del 04-11-2026 identifica los assets en una distribución local de
+terceros y deja de presentar su conversión y refinador como autoría acreditada
+de GuerraMagica. El [dossier de procedencia](docs/commercial/LICENSES_PROVENANCE.md)
+recoge las evidencias y límites. Los avisos originales se conservan; no se han
+modificado modelos, procesamiento ni paquetes históricos.
 
 ## Preparación comercial / Commercial preparation
 

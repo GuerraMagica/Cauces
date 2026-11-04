@@ -12,7 +12,8 @@ local.julio.cauces: confirmar identificador estable y migración de preferencias
 si se decide cambiarlo. No hacerlo silenciosamente.
 
 Antes de firmar: cerrar decisiones y derechos de LICENSES_PROVENANCE/LEGAL_REVIEW,
-completar textos de clientes, resolver v1/v3 nominal y ejecutar VALIDATION_PLAN.
+completar textos de clientes, verificar la etiqueta v1 en el futuro paquete y
+ejecutar VALIDATION_PLAN. El aviso histórico v3 se conserva; ver LICENSES_PROVENANCE.
 Confirmar que el empaquetador real añade los textos/avisos aprobados; este dossier
 NO los ha insertado en la app 0.4.2. Mantener todos los hashes de modelo fijados.
 
@@ -25,7 +26,8 @@ and keep an immutable reference. Current ID is local.julio.cauces: confirm a sta
 identifier and preference migration if changing it; do not silently replace it.
 
 Before signing, resolve LICENSES_PROVENANCE/LEGAL_REVIEW, complete customer texts,
-settle the v1/v3 naming and run VALIDATION_PLAN. Confirm actual packaging includes
+verify the v1 label in the future package and run VALIDATION_PLAN. Retain the
+historical v3 notice; see LICENSES_PROVENANCE. Confirm actual packaging includes
 approved notices/documents: this dossier has NOT inserted them into app 0.4.2.
 Retain pinned model hashes.
 

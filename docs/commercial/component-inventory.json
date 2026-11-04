@@ -27,27 +27,37 @@
       "supplier": "Alibaba Speech Lab",
       "licence_declared": "Apache-2.0",
       "source": "https://huggingface.co/alibabasglab/MossFormer2_SS_16K",
-      "evidence": "upstream model card; recorded checkpoint fingerprint",
-      "conversion_tensor_equivalence_clearance": "not established by fingerprint alone"
+      "evidence": "upstream model card and original source-distribution notice; published checkpoint fingerprint match",
+      "conversion_tensor_equivalence_clearance": "not established by fingerprint alone",
+      "source_revision": "407cb030cd66340918ebb6c8cc63b18f8592cdbe",
+      "source_checkpoint_sha256": "00a3a48bda492db1e829b85dd443f8f43a43039a3e90f1a24962ea9caf14a11a",
+      "code_source_revision_recorded": "6b3774dc79c46ae8bed2a4fa5f706f0ac8c75c61"
     },
     {
       "id": "onnx-conversion",
-      "supplier_declared": "GuerraMagica",
-      "evidence_kind": "project_owner_declaration",
-      "declaration_date": "2026-11-02",
-      "signed_rights_record": "pending",
       "assets": [
         "separator.onnx",
         "separator_gpu.onnx",
         "weights.bin"
-      ]
+      ],
+      "authorship_status": "not_established",
+      "asset_provenance": "local_third_party_distribution",
+      "evidence_kind": "asset_sha256_match_and_retained_original_notice",
+      "earlier_owner_attribution": "not_adopted_as_verified_authorship",
+      "evidence_review_date": "2026-11-04",
+      "low_band_model_licence_declared": "Apache-2.0",
+      "declaration_source": "upstream_model_card_and_source_distribution_notice",
+      "specific_export_contribution_licence_scope": "pending_clarification_not_absence_of_low_band_licence_declaration",
+      "original_export_scripts": "not_located",
+      "provenance_note": "LICENSES_PROVENANCE.md",
+      "asset_sha256": {
+        "separator.onnx": "ac763dcb1010ea8a23103ee799ceb61f394e91bd7a8280e1ef34d3f710ea5a82",
+        "separator_gpu.onnx": "7c84c6de4624555fd1492e1ea3e8e70ef11cc898385f0d857ebd5239406b7574",
+        "weights.bin": "b1491a04c97baaa30ebecfc7290fc70daa9404774ace4495065f5243b4188889"
+      }
     },
     {
       "id": "refiner",
-      "supplier_declared": "GuerraMagica",
-      "evidence_kind": "project_owner_declaration",
-      "declaration_date": "2026-11-02",
-      "signed_rights_record": "pending",
       "underlying_weights_authorship_and_ownership": "documentary_evidence_pending",
       "asset_licence_status": "undetermined_from_documentation_examined",
       "redistribution_permission": "pending_applicable_licence_or_authorisation_evidence",
@@ -67,7 +77,12 @@
       "asset_sha256": {
         "refiner.onnx": "4d4d38f4ca538924118b79daf5e24f293fec6f04e5a6eca2aa36e04c8f23f9cb",
         "weights.bin": "b1491a04c97baaa30ebecfc7290fc70daa9404774ace4495065f5243b4188889"
-      }
+      },
+      "authorship_status": "not_established",
+      "asset_provenance": "local_third_party_distribution",
+      "evidence_kind": "asset_sha256_match_and_retained_original_notice",
+      "earlier_owner_attribution": "not_adopted_as_verified_authorship",
+      "evidence_review_date": "2026-11-04"
     },
     {
       "id": "onnxruntime",
@@ -94,9 +109,10 @@
     }
   ],
   "model_label_inconsistency": {
-    "model_manifest_and_readme": "ONNX v1",
-    "model_notice_heading": "ONNX v3",
-    "resolution": "pending_owner_selection_before_commercial_release"
+    "current_model_manifest_and_readme": "ONNX v1",
+    "current_source_notice_heading": "ONNX v1",
+    "historical_0_4_2_notice_heading": "ONNX v3",
+    "resolution": "current_source_labels_aligned_historical_notice_retained_no_model_changes"
   },
   "licence_file_sha256": {
     "Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
@@ -104,5 +120,15 @@
     "ONNXRuntime-ThirdPartyNotices.txt": "143764b952fdb1a7c69ce653bfba74a7744d6a8a573bfb73e235fba356c83de3",
     "nlohmann-json-LICENSE.txt": "86b998c792894ccb911a1cb7994f7a9652894e7a094c0b5e45be2f553f45cf14",
     "Model-NOTICE.txt": "f9aac4e713c31f97789cd1e2328d4e77c7ad4e1973698f8a5edf027beb4639e8"
+  },
+  "current_source_model_notice": {
+    "path": "../../resources/Model-NOTICE.txt",
+    "sha256": "eb0b5bd9ba06f11345b9f186e5f068ab1ed5e65ee1b5e0670e9586b9555a0a31",
+    "scope": "corrected_provenance_for_future_packaging_not_retroactive_asset_permission"
+  },
+  "historical_model_notice": {
+    "path": "licenses/Model-NOTICE.txt",
+    "status": "unchanged_0_4_2_copy_earlier_authorship_attribution_unestablished",
+    "current_correction": "LICENSES_PROVENANCE.md"
   }
 }

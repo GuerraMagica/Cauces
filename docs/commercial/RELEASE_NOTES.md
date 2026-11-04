@@ -2,10 +2,23 @@
 
 Versión documental / Document revision: 1.0 | 2026-11-02 | Cauces 0.4.2, build 6
 
+## Corrección documental / Documentation correction - 2026-11-04
+
+La atribución histórica de conversión y refinador que figura abajo no está
+acreditada y no se adopta como autoría verificada. La revisión actual reconoce
+Apache-2.0 para el modelo de banda baja y mantiene pendientes el alcance sobre
+aportaciones específicas del exportador y los permisos del refinador.
+Ver [procedencia](LICENSES_PROVENANCE.md). El paquete histórico no se modifica.
+
+The historical conversion/refiner attribution below is unestablished and is not
+adopted as verified authorship. The current review records Apache-2.0 for the
+low-band model; scope over specific exporter contributions and refiner permissions
+remain pending. See provenance above. The historical package is unchanged.
+
 ## ES - Referencia personal 0.4.2, build 6 (02-11-2026)
 
-Paquete universal actualizado con atribución de conversión ONNX y refinador a
-GuerraMagica según declaración del titular. Modelos, pesos, biblioteca numérica,
+El paquete histórico universal incorporó una atribución de conversión ONNX y
+refinador a GuerraMagica según declaración del titular. Modelos, pesos, biblioteca numérica,
 worker y runtime coinciden byte a byte con 0.4.1. No cambia la calidad ni el
 algoritmo. La versión sigue firmada ad hoc sin notarización comercial.
 
@@ -21,7 +34,7 @@ La documentación comercial posterior no altera el ZIP personal 0.4.2.
 
 ## EN - Personal reference 0.4.2, build 6 (2026-11-02)
 
-Updated universal package attributes ONNX conversion/refiner to GuerraMagica
+The historical universal package attributed ONNX conversion/refiner to GuerraMagica
 according to the owner declaration. Models, weights, numerical library, worker
 and runtime are byte-identical to 0.4.1. Algorithm/quality are unchanged. This
 version remains ad hoc signed without commercial notarization.

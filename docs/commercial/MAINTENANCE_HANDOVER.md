@@ -11,8 +11,8 @@ no conserva audio, pesos, vendor, build, evidencias ni ZIP. No asumir que clonar
 el repositorio recupera el producto completo. El LAB es independiente.
 
 Custodiar en almacenamiento controlado el ZIP 0.4.2/checksum, modelos exactos,
-manifest, fuentes fijadas de ORT, avisos y datos de conversión del titular.
-Conservar además evidencias de aceptación autorizadas sin añadir voces privadas
+manifest, fuentes fijadas de ORT, avisos y evidencias de procedencia/conversión
+disponibles. Conservar además evidencias de aceptación autorizadas sin añadir voces privadas
 a Git. Guardar claves de firma en custodia separada; un hash no reemplaza backup.
 
 Para reconstruir, usar macOS y herramientas Apple, CMake/Ninja existentes o una
@@ -32,8 +32,8 @@ vendor/build, evidence or ZIPs. A clone is not a complete product backup. LAB is
 independent.
 
 Keep the 0.4.2 ZIP/checksum, exact models, manifest, pinned ORT sources, notices
-and owner's conversion records in controlled storage. Keep authorised acceptance
-evidence without committing private voices. Signing keys need separate custody;
+and available provenance/conversion evidence in controlled storage. Keep authorised
+acceptance evidence without committing private voices. Signing keys need separate custody;
 a checksum is not a backup.
 
 Rebuild with macOS/Apple tools and existing or approved CMake/Ninja setup.
