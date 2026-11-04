@@ -2,6 +2,21 @@
 
 Versión documental / Document revision: 1.0 | 2026-11-02 | Cauces 0.4.2, build 6
 
+## Actualización de licencia / Licence update - 2026-11-04
+
+El material propio del repositorio adopta GPL-3.0-only por aprobación del titular.
+El [alcance actual](../../LICENSE_SCOPE.md) y [CONTRIBUTING](../../CONTRIBUTING.md)
+prevalecen sobre decisiones de licencia que este dossier histórico dejaba abiertas.
+Los borradores comerciales no condicionan los derechos GPL a una compra ni a
+límites de puestos. Modelos y pesos conservan los permisos pendientes documentados;
+no se ha generado una nueva app ni una nueva versión del PDF/ZIP del dossier.
+
+Original repository material is now GPL-3.0-only by owner approval. The current
+scope and contribution policy linked above supersede historical open licence
+choices in this dossier. Draft sales terms do not make GPL rights conditional on
+purchase or seat limits. Model/weight permissions remain separately documented;
+no app or dossier PDF/ZIP was rebuilt.
+
 ## ES - Cómo utilizar este dossier
 
 Paquete bilingüe de preparación para una posible venta de Cauces. La referencia

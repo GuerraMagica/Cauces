@@ -10,6 +10,23 @@ modelos, pesos, audios, capturas del original, herramientas de investigación
 y paquetes `.app`/ZIP no se distribuyen aquí. Los resultados documentados
 proceden de la validación local; no equivalen a pruebas ejecutadas por GitHub.
 
+## Licencia y colaboración
+
+El código, la documentación y el artwork propios se ofrecen bajo
+**GNU GPL versión 3 únicamente (`GPL-3.0-only`)**. Consulta [LICENSE](LICENSE),
+[COPYRIGHT](COPYRIGHT) y el [alcance y las excepciones](LICENSE_SCOPE.md).
+Las bibliotecas mantienen sus licencias. Esta concesión no cubre modelos,
+conversiones ONNX, refinador ni pesos, cuyos avisos y derechos pendientes
+se documentan por separado. Los paquetes históricos no se han regenerado.
+
+Puedes ayudar con errores reproducibles, documentación, diseño, pruebas y código:
+[guía para contribuir](CONTRIBUTING.md). Las futuras contribuciones propias se
+ofrecen bajo la misma licencia y requieren sign-off del [DCO 1.1](DCO).
+La declaración del titular del 04-11-2026 sobre la ausencia de aportaciones
+adicionales de otros autores se registra en LICENSE_SCOPE.md.
+
+## Versión de referencia
+
 La versión 0.3 incorpora el diseño Flow, textos propios en inglés y el icono Cauces.
 Los assets editables y la guía de entrega están en `design/cauces-v1/START-HERE.md`.
 Las teclas ⌘1–⌘4 cambian de pista y Espacio reproduce o pausa.
@@ -101,7 +118,11 @@ ni escribe audio: sus adaptadores quedan fuera de la API numérica.
 
 ## Compilar y verificar
 
-Requiere macOS, las herramientas de desarrollo Apple, CMake y Ninja. La
+Requiere macOS 15 o posterior, las herramientas de desarrollo Apple con Swift,
+CMake 3.26 o posterior, Ninja y Python 3.9 o posterior de las herramientas Apple.
+Los ejecutores usan `/usr/bin/python3`; no requieren NumPy para el recorrido
+público. Para ejecutar x86_64 en Apple Silicon debe existir una instalación de
+Rosetta; los scripts no la instalan. La
 compilación no necesita los modelos; para procesar y empaquetar debes disponer
 localmente de los archivos del modelo correspondientes a esta versión:
 `separator.onnx`, `refiner.onnx`, `separator_gpu.onnx`, `weights.bin` y
@@ -125,23 +146,63 @@ terminada no la necesita.
 
 ```sh
 bash scripts/prepare-runtime.sh   # desarrollo: descarga y compila dependencias
-bash scripts/build.sh
-ctest --test-dir build/arm64 --output-on-failure
-ctest --test-dir build/x86_64 --output-on-failure
-bash scripts/package.sh
+bash scripts/build.sh arm64       # usa x86_64 si esa es tu arquitectura
+bash tests/run_public_tests.sh arm64
 ```
 
-El empaquetador se niega a reemplazar una app ya existente. Mueve tu build
-anterior antes de repetirlo. Las siete suites CTest y `tests/JobStateTests.swift`
-no necesitan modelos ni audios externos durante su ejecución. Los tests Python
-de comparación, worker y paquete, y `WorkerConnectionTests.swift`, son pruebas
-de integración local: necesitan los modelos, un Python con NumPy cuando
-corresponda y un corpus local de capturas CPU, que no se publica.
-`CAUCES_REFERENCE_FIXTURES_DIR` indica su directorio (predeterminado:
-`build/reference-fixtures/`); los adaptadores de comparación están en este repo. Esos tests no forman parte de la app de destino ni se presentan
-como reproducibles con este repositorio por sí solo.
+Después de compilar, **`bash tests/run_public_tests.sh`** ejecuta las pruebas sin
+modelos ni capturas privadas, usando la arquitectura del proceso actual.
+Puedes indicar `arm64`, `x86_64` o `all`. Para ambas arquitecturas:
 
-Las regresiones de seguridad se ejecutan con `bash tests/run_security_tests.sh`.
+```sh
+bash scripts/build.sh arm64 x86_64
+bash tests/run_public_tests.sh all
+```
+
+El recorrido público ejecuta los contratos del propio runner, todas las pruebas
+CTest registradas (actualmente ocho por arquitectura), cinco suites Swift
+(estado, política local, directorios privados, mensajes y salida con hardware
+simulado), regresiones del protocolo y 100 WAV malformados reproducibles con
+recuperación mediante un WAV sintético válido. No carga modelos, cambia relojes
+de hardware real ni descarga assets. CTest sin pruebas o con pruebas omitidas
+provoca error. También se exige que el informe contenga los ocho contratos
+publicados, incluida la denegación de `/dev/fd`, aunque CMake no hubiera registrado
+alguno. Cualquier fallo interrumpe el recorrido sin anunciar PASS.
+El resultado CTest queda en `build/<arquitectura>/public-ctest.xml`.
+
+`--help` muestra la sintaxis. Arquitectura/argumentos inválidos, herramientas
+ausentes, binarios no compilados o de otra arquitectura producen un diagnóstico
+y una salida no satisfactoria. Compilar sigue requiriendo ONNX Runtime y los
+headers JSON: **sin modelos no significa sin dependencias de desarrollo**.
+La prueba de denegación de `/dev/fd` requiere que macOS permita crear su política
+de prueba con `sandbox-exec`. Si el entorno lo impide, se informa del fallo;
+no se omite la prueba ni se recomienda desactivar protecciones del sistema.
+
+La integración local conserva las pruebas de transporte, cancelación/reintento,
+rechazo individual de assets y worker/exportación. Requiere tus modelos y
+capturas CPU locales, que no se publican:
+
+```sh
+# Usa únicamente directorios locales que estés autorizado a procesar.
+CAUCES_MODEL_DIR='/ruta/local/modelos' \
+CAUCES_REFERENCE_FIXTURES_DIR='/ruta/local/capturas' \
+  bash tests/run_integration_tests.sh arm64
+```
+
+Sin esas variables se usan `vendor/cauces-models/` y `build/reference-fixtures/`.
+Si falta un asset o fixture requerido, la integración termina con error antes de
+compilar sus pruebas; nunca se transforma en un éxito parcial. El comando
+histórico `bash tests/run_security_tests.sh` sigue ejecutando **públicas e
+integración en ambas arquitecturas**, y acepta también una arquitectura explícita.
+`bash tests/run_swift_tests.sh --public arm64` permite ejecutar solo las cinco
+suites Swift públicas; sin opciones conserva el recorrido Swift completo dual.
+Las comparaciones numéricas y pruebas de paquete siguen siendo comprobaciones
+locales adicionales; algunas requieren NumPy y capturas CPU no distribuidas.
+
+El empaquetado permanece separado: `bash scripts/package.sh` necesita los modelos
+autorizados y se niega a reemplazar una app existente. Los avisos de derechos
+pendientes siguen aplicándose; estas pruebas no autorizan su redistribución.
+
 `tests/sandbox_probe.py <app> <WAV-sintético> [arm64|x86_64]` prepara una app de
 prueba firmada, usa el controller de producción y el worker empaquetado, comprueba
 EPERM en padre/hijo y recorre separación, escucha, exportación y cierre. No se
@@ -161,6 +222,14 @@ ejecución permanecen en el workspace local y están excluidos de Git. Este
 proyecto no entrena ni recrea los pesos del modelo. Tampoco concede derechos
 de redistribución sobre modelos o bibliotecas de terceros; sus dependencias
 conservan sus propias licencias y avisos.
+
+El refinador y sus tensores externos en `weights.bin` tienen un
+[aviso provisional de procedencia y derechos](docs/commercial/LICENSES_PROVENANCE.md#es---refinador-de-alta-frecuencia-de-cauces).
+Se conserva la autoría declarada por GuerraMagica; la titularidad de los pesos,
+su licencia aplicable y el permiso de redistribución están pendientes de
+acreditación documental. La licencia del modelo base no se extiende por
+presunción al refinador. El aviso fuente se ha actualizado para futuros
+empaquetados; el paquete 0.4.2 existente permanece intacto.
 
 ## Privacidad y seguridad
 

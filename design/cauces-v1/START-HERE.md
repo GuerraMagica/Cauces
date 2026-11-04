@@ -1,5 +1,11 @@
 # Cauces — designer handoff / v1
 
+Original Cauces artwork and design documentation are licensed **GPL-3.0-only**.
+See [licence scope](../../LICENSE_SCOPE.md), [COPYRIGHT](../../COPYRIGHT) and
+[contribution guidelines](../../CONTRIBUTING.md). The copyright licence does not
+itself grant trademark or official-endorsement rights. Third-party material, if
+introduced later, requires its own compatible licence and attribution.
+
 **Status: Flow approved and integrated in Cauces 0.3.0.** The native app uses these colors/artwork and a generated macOS app icon. The SVG screens and HTML remain editable design references, not the running app.
 
 Open `index.html` in a browser. It is self-contained: no account, external font or external network resource is needed. The interaction checks used a local loopback preview; direct file opening was not verified by the automation browser. Use the state buttons to inspect six screens, or click the primary action in the mock-up. This is a visual prototype: it does not open, play, process or export audio.

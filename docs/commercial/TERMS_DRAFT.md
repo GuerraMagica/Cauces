@@ -2,8 +2,16 @@
 
 Versión documental / Document revision: 1.0 | 2026-11-02 | Cauces 0.4.2, build 6
 
-**NO PUBLICAR / DO NOT PUBLISH** hasta completar los campos y revisión jurídica.
-Until fields and legal review are complete, this is a working template, not an offer.
+**BORRADOR NO OPERATIVO / NOT EFFECTIVE SALES TERMS.** No utilizar como condiciones
+de contratación hasta completar los campos y la revisión. Publicar su texto como
+documentación no lo convierte en una oferta. / Do not use as sales terms before
+completion and review; publishing this template does not turn it into an offer.
+
+Actualización / Update 2026-11-04: el material propio de Cauces se ofrece bajo
+GPL-3.0-only, según [alcance](../../LICENSE_SCOPE.md). Este borrador no restringe
+esa licencia ni concede permisos sobre modelos pendientes. / Original Cauces
+material uses GPL-3.0-only under the linked scope; this draft neither restricts
+that licence nor grants rights to model assets with pending permissions.
 
 ## ES - Partes, producto y contratación
 
@@ -36,13 +44,12 @@ taxes, payment and delivery before purchase: {{PRICE_AND_TAXES}} and
 
 ## ES - Licencia de uso
 
-Tras la adquisición válida se concede una licencia no exclusiva de uso bajo la
-modalidad {{LICENCE_MODEL}}, métrica {{LICENCE_METRIC}}, cantidad {{LICENCE_QUANTITY}}
-y duración {{LICENCE_TERM}}. Especificar copia de seguridad, reinstalación,
-transferencia y acceso de colaboradores en {{TRANSFER_AND_BACKUP_POLICY}}.
-No se impone una suscripción, límite de puestos ni obligación de activación que
-no se hayan seleccionado y comunicado. La versión actual no aplica DRM ni verifica
-licencias por red; una condición contractual no equivale a una función implementada.
+Los derechos sobre el material propio cubierto por GPL-3.0-only se conceden por
+esa licencia y no dependen de una compra, un número de puestos o un plazo de uso.
+Una eventual oferta de pago debe definir entrega y soporte por separado, sin
+restringir las facultades GPL de copia, modificación y redistribución. Los campos
+comerciales de otras plantillas no modifican esta concesión. La versión actual
+no aplica DRM ni verifica licencias por red.
 
 El cliente conserva sus derechos sobre las entradas y resultados en la medida
 que le correspondan. No cede grabaciones ni autoriza entrenamiento por usar Cauces.
@@ -54,17 +61,16 @@ excepciones. Las condiciones de componentes de terceros prevalecen para éstos.
 
 ## EN - Use licence
 
-A valid purchase grants a non-exclusive licence under {{LICENCE_MODEL}}, measured
-by {{LICENCE_METRIC}}, quantity {{LICENCE_QUANTITY}}, for {{LICENCE_TERM}}.
-Define backup, reinstallation, transfer and collaborator access in
-{{TRANSFER_AND_BACKUP_POLICY}}. No subscription, seat limit or activation duty is
-imposed unless selected and disclosed. The current app has no DRM/network licence
-checks: a contract term does not mean that enforcement exists in the software.
+Rights in original material covered by GPL-3.0-only come from that licence and
+do not depend on purchase, seats or a use term. A paid offer must define delivery
+and support separately without restricting GPL copying, modification and
+redistribution rights. Commercial fields in other templates do not change this
+grant. The current app has no DRM or network licence checks.
 
 Customers retain the rights they have in inputs/results. Using Cauces does not
 assign recordings or authorise model training. Customers need the appropriate
 material permissions, must review results before delivery and retain originals.
-The proprietary grant does not transfer third-party model ownership or reduce
+The project grant does not transfer third-party model ownership or reduce
 rights under third-party licences. Do not impose an absolute reverse-engineering
 ban where statutory exceptions apply. Third-party terms govern their components.
 

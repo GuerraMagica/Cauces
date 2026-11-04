@@ -1,5 +1,53 @@
 # Validación de Cauces
 
+## Pruebas públicas reproducibles — 04-11-2026
+
+- Nuevo `tests/run_public_tests.sh [arm64|x86_64|all]`, con arquitectura actual
+  por defecto. Separa CTest, cinco suites Swift independientes y WAV/protocolo
+  sintéticos de la integración que necesita assets privados. No modifica código
+  de producción, modelos, DSP, entitlements ni paquetes existentes.
+- `run_integration_tests.sh` conserva transporte, cancelación/reintento, rechazo
+  individual de assets y worker/exportación. `run_security_tests.sh` sigue
+  ejecutando públicas e integración, ambas arquitecturas por defecto. Las pruebas
+  de worker y WAV verifican ahora la arquitectura pedida; WAV tiene timeout y
+  recuperación explícita con una entrada válida tras 100 casos malformados.
+- TDD: siete contratos de CLI/preflight y seis de informes CTest pasan. Se
+  observaron fallos antes de implementar los recorridos y el rechazo de informes
+  incompletos. Ayuda, argumentos inválidos y requisitos ausentes no lanzan pruebas
+  ni crean builds. No se confunde una integración sin assets con una suite pasada.
+- Copia de fuentes limpia basada en `a15775d`, con los cambios de pruebas bajo
+  revisión. Solo se copiaron dependencias de desarrollo permitidas: headers y
+  bibliotecas ORT/JSON; sin modelos, WAV privados, capturas CPU ni enlaces al
+  workspace original. Se conservaron únicamente enlaces relativos internos del
+  runtime. Build C++ y GUI ARM64/x86_64 PASS, sin descargar ni instalar herramientas.
+- `bash tests/run_public_tests.sh all` en esa copia: 8/8 CTest por arquitectura,
+  5/5 suites Swift por arquitectura, protocolo/FIFO y 100 WAV malformados más
+  recuperación por arquitectura PASS. Variables de modelos/fixtures apuntaban
+  deliberadamente a destinos inexistentes. El recorrido no las necesita.
+- `bash tests/run_security_tests.sh all` con los assets sintéticos locales:
+  públicas e integración PASS en ambas arquitecturas. Transporte real, 18 rechazos
+  individuales por arquitectura (36 en total), controles válidos y exportación
+  pasan. Los originales se verifican sin cambios por SHA-256; no se usa audio de
+  producción. x86_64 se ejecuta bajo Rosetta, no en Intel físico.
+- Revisión independiente: se detectó que un registro CTest parcial podía aparentar
+  éxito. Se añadió un validador que exige los ocho contratos publicados y rechaza
+  skipped/failure/error, manteniendo la posibilidad de añadir más pruebas. Repro
+  real en un build temporal sin `wav_without_dev_fd`: siete CTests pasan, pero el
+  runner devuelve error y no anuncia PASS. Se restauró el registro y se repitieron
+  públicas e integración con éxito. La corrección tiene seis contratos específicos.
+- Primer intento de la copia limpia: dos CTests fallaron porque la preparación
+  había omitido `libonnxruntime.1.dylib`, enlace interno requerido por dyld. Se
+  completó la copia del runtime y se verificó el loader en ambas arquitecturas;
+  no se cambió CMake ni código de producción. Se conserva el log fallido.
+- La prueba `/dev/fd` se ejecutó con permiso para crear su política temporal de
+  macOS. No se desactivaron protecciones ni se omitieron pruebas. Las suites de
+  salida usan hardware simulado; no se cambió el reloj de una interfaz real.
+- Evidencia cruda local, excluida de Git: `evidence/public-tests-20261104/`.
+  README y CONTRIBUTING describen requisitos, comandos y separación de categorías.
+  No se han verificado aquí descargas de dependencias desde cero, GUI empaquetada,
+  App Sandbox real, Intel físico, escucha profesional ni Pro Tools. Los derechos
+  pendientes de modelos y la distribución de la app completa siguen pendientes.
+
 ## Cauces 0.4.2 — Paquete actualizado (02-11-2026)
 
 - Bundle universal nuevo, build 6, sin sobrescribir las versiones anteriores.
