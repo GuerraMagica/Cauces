@@ -17,12 +17,15 @@ def request(proc,message):
         if event['type'] in ('info','result','error','exported'):return event,events
 
 def main():
-    binary=ROOT/'build/arm64/dialogue-worker'
+    architecture=os.environ.get('DS_TEST_ARCH','arm64')
+    if architecture not in ('arm64','x86_64'):raise ValueError('Unsupported test architecture')
+    binary=ROOT/'build'/architecture/'dialogue-worker'
     assert binary.exists(),'Worker executable is missing'
     with tempfile.TemporaryDirectory(prefix='dialogue-worker-test-') as tmp:
         p=subprocess.Popen([str(binary),'--models',str(MODELS)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
         try:
-            assert json.loads(p.stdout.readline())['type']=='ready'
+            ready=json.loads(p.stdout.readline())
+            assert ready['type']=='ready' and ready['architecture']==architecture,ready
             ev,_=request(p,{'cmd':'nonsense','id':1});assert ev['type']=='error'
             source=FIXTURES/'signed_zero.wav'
             before=(hashlib.sha256(source.read_bytes()).hexdigest(),source.stat().st_mtime_ns)

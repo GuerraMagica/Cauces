@@ -44,12 +44,19 @@ proyectos independientes.
 
 ## Cambios y comprobaciones
 
-Consulta [README](README.md#compilar-y-verificar) para compilar y comprobar el
-proyecto. CTest y las pruebas de estado indicadas allí pueden ejecutarse sin
-modelos; varias pruebas de integración requieren assets y fixtures locales no
-publicados. No se exige obtenerlos ni subirlos para proponer documentación o
-cambios que puedan revisarse sin ellos. Indica qué has ejecutado y qué queda
-pendiente, incluida la arquitectura real o Rosetta.
+Consulta [README](README.md#compilar-y-verificar) para preparar las dependencias
+y compilar. Después ejecuta `bash tests/run_public_tests.sh` para la arquitectura
+del proceso actual, o indica `arm64`, `x86_64` o `all` explícitamente. Este recorrido
+incluye CTest, cinco suites Swift y pruebas sintéticas de WAV/protocolo sin modelos
+ni capturas privadas. Las dependencias de compilación sí son necesarias.
+
+`bash tests/run_integration_tests.sh` requiere modelos y capturas locales no
+publicados; un requisito ausente produce error, no una omisión silenciosa.
+`run_security_tests.sh` conserva el recorrido completo de ambas categorías y,
+por defecto, ambas arquitecturas. No se exige obtener ni subir assets privados
+para proponer cambios revisables sin ellos. Indica el comando, qué has ejecutado
+y qué queda pendiente, incluida la arquitectura real o Rosetta. Un fallo de
+`sandbox-exec` debido al entorno se registra como fallo, no como PASS.
 
 Mantén los cambios acotados. Para procesamiento de audio, comprueba los contratos
 de muestras, canales, frecuencia y BWF correspondientes. Conserva el procesamiento
@@ -81,5 +88,13 @@ internal documents, secrets or unlicensed models/weights. Do not bypass model
 integrity checks or import the separate LAB's engines. Follow the build/test
 instructions in README and report what actually ran; some integration tests
 depend on unpublished local assets. Preserve audio contracts, local processing
-and App Sandbox. Synthetic checks do not establish professional listening or DAW
-acceptance.
+and App Sandbox. After building with the development dependencies, run
+`bash tests/run_public_tests.sh [arm64|x86_64|all]`: the default is the current
+process architecture. This runs CTest, five public Swift suites, and synthetic
+WAV/protocol checks without models or private reference captures. Missing tools,
+builds, skipped CTests or test failures cannot produce a public PASS.
+`run_integration_tests.sh` separately requires local authorised assets;
+`run_security_tests.sh` remains the full public+integration command, defaulting
+to both architectures. Report environment failures, including `sandbox-exec`,
+rather than silently skipping tests. Synthetic checks do not establish
+professional listening or DAW acceptance.

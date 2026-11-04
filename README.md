@@ -118,7 +118,11 @@ ni escribe audio: sus adaptadores quedan fuera de la API numérica.
 
 ## Compilar y verificar
 
-Requiere macOS, las herramientas de desarrollo Apple, CMake y Ninja. La
+Requiere macOS 15 o posterior, las herramientas de desarrollo Apple con Swift,
+CMake 3.26 o posterior, Ninja y Python 3.9 o posterior de las herramientas Apple.
+Los ejecutores usan `/usr/bin/python3`; no requieren NumPy para el recorrido
+público. Para ejecutar x86_64 en Apple Silicon debe existir una instalación de
+Rosetta; los scripts no la instalan. La
 compilación no necesita los modelos; para procesar y empaquetar debes disponer
 localmente de los archivos del modelo correspondientes a esta versión:
 `separator.onnx`, `refiner.onnx`, `separator_gpu.onnx`, `weights.bin` y
@@ -142,23 +146,63 @@ terminada no la necesita.
 
 ```sh
 bash scripts/prepare-runtime.sh   # desarrollo: descarga y compila dependencias
-bash scripts/build.sh
-ctest --test-dir build/arm64 --output-on-failure
-ctest --test-dir build/x86_64 --output-on-failure
-bash scripts/package.sh
+bash scripts/build.sh arm64       # usa x86_64 si esa es tu arquitectura
+bash tests/run_public_tests.sh arm64
 ```
 
-El empaquetador se niega a reemplazar una app ya existente. Mueve tu build
-anterior antes de repetirlo. Las siete suites CTest y `tests/JobStateTests.swift`
-no necesitan modelos ni audios externos durante su ejecución. Los tests Python
-de comparación, worker y paquete, y `WorkerConnectionTests.swift`, son pruebas
-de integración local: necesitan los modelos, un Python con NumPy cuando
-corresponda y un corpus local de capturas CPU, que no se publica.
-`CAUCES_REFERENCE_FIXTURES_DIR` indica su directorio (predeterminado:
-`build/reference-fixtures/`); los adaptadores de comparación están en este repo. Esos tests no forman parte de la app de destino ni se presentan
-como reproducibles con este repositorio por sí solo.
+Después de compilar, **`bash tests/run_public_tests.sh`** ejecuta las pruebas sin
+modelos ni capturas privadas, usando la arquitectura del proceso actual.
+Puedes indicar `arm64`, `x86_64` o `all`. Para ambas arquitecturas:
 
-Las regresiones de seguridad se ejecutan con `bash tests/run_security_tests.sh`.
+```sh
+bash scripts/build.sh arm64 x86_64
+bash tests/run_public_tests.sh all
+```
+
+El recorrido público ejecuta los contratos del propio runner, todas las pruebas
+CTest registradas (actualmente ocho por arquitectura), cinco suites Swift
+(estado, política local, directorios privados, mensajes y salida con hardware
+simulado), regresiones del protocolo y 100 WAV malformados reproducibles con
+recuperación mediante un WAV sintético válido. No carga modelos, cambia relojes
+de hardware real ni descarga assets. CTest sin pruebas o con pruebas omitidas
+provoca error. También se exige que el informe contenga los ocho contratos
+publicados, incluida la denegación de `/dev/fd`, aunque CMake no hubiera registrado
+alguno. Cualquier fallo interrumpe el recorrido sin anunciar PASS.
+El resultado CTest queda en `build/<arquitectura>/public-ctest.xml`.
+
+`--help` muestra la sintaxis. Arquitectura/argumentos inválidos, herramientas
+ausentes, binarios no compilados o de otra arquitectura producen un diagnóstico
+y una salida no satisfactoria. Compilar sigue requiriendo ONNX Runtime y los
+headers JSON: **sin modelos no significa sin dependencias de desarrollo**.
+La prueba de denegación de `/dev/fd` requiere que macOS permita crear su política
+de prueba con `sandbox-exec`. Si el entorno lo impide, se informa del fallo;
+no se omite la prueba ni se recomienda desactivar protecciones del sistema.
+
+La integración local conserva las pruebas de transporte, cancelación/reintento,
+rechazo individual de assets y worker/exportación. Requiere tus modelos y
+capturas CPU locales, que no se publican:
+
+```sh
+# Usa únicamente directorios locales que estés autorizado a procesar.
+CAUCES_MODEL_DIR='/ruta/local/modelos' \
+CAUCES_REFERENCE_FIXTURES_DIR='/ruta/local/capturas' \
+  bash tests/run_integration_tests.sh arm64
+```
+
+Sin esas variables se usan `vendor/cauces-models/` y `build/reference-fixtures/`.
+Si falta un asset o fixture requerido, la integración termina con error antes de
+compilar sus pruebas; nunca se transforma en un éxito parcial. El comando
+histórico `bash tests/run_security_tests.sh` sigue ejecutando **públicas e
+integración en ambas arquitecturas**, y acepta también una arquitectura explícita.
+`bash tests/run_swift_tests.sh --public arm64` permite ejecutar solo las cinco
+suites Swift públicas; sin opciones conserva el recorrido Swift completo dual.
+Las comparaciones numéricas y pruebas de paquete siguen siendo comprobaciones
+locales adicionales; algunas requieren NumPy y capturas CPU no distribuidas.
+
+El empaquetado permanece separado: `bash scripts/package.sh` necesita los modelos
+autorizados y se niega a reemplazar una app existente. Los avisos de derechos
+pendientes siguen aplicándose; estas pruebas no autorizan su redistribución.
+
 `tests/sandbox_probe.py <app> <WAV-sintético> [arm64|x86_64]` prepara una app de
 prueba firmada, usa el controller de producción y el worker empaquetado, comprueba
 EPERM en padre/hijo y recorre separación, escucha, exportación y cierre. No se
