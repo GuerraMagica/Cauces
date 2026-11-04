@@ -89,9 +89,11 @@
       "version": "1.31.1",
       "supplier": "Microsoft",
       "licence_declared": "MIT",
-      "source_commit": "6af1a932e2286d5c58166085d24c68783033edee",
       "notice": "licenses/ONNXRuntime-ThirdPartyNotices.txt",
-      "transitive_dependency_sbom": "pending_per_architecture"
+      "transitive_dependency_sbom": "../release/dependency-inventory.json",
+      "source_commit_x86_64": "6af1a932e2286d5c58166085d24c68783033edee",
+      "source_commit_arm64": "41d4d61f14b9c1dd0b2ccda1e9b85dd415fd0496",
+      "inventory_scope": "reviewed_source_pins_and_x86_64_link_inputs_arm64_component_inclusion_not_certified"
     },
     {
       "id": "nlohmann-json",
@@ -99,7 +101,8 @@
       "supplier": "Niels Lohmann",
       "licence_declared": "MIT",
       "notice": "licenses/nlohmann-json-LICENSE.txt",
-      "notice_header_reconciliation": "pending"
+      "notice_header_reconciliation": "verified_identical_upstream_3_11_3_header_tree_and_root_licence_additional_header_attributions_retained",
+      "details": "../release/dependency-inventory.json"
     },
     {
       "id": "apple-system-frameworks",

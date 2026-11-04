@@ -2,6 +2,12 @@
 
 Versión documental / Document revision: 1.3 | 2026-11-04 | Referencia / Baseline: Cauces 0.4.2, build 6
 
+Preparación posterior: [candidato local 0.4.2 build 7](../../RELEASE.md), con avisos
+actualizados y entrega de fuentes. Las menciones a paquetes intactos se refieren
+al histórico build 6; los permisos pendientes de modelos siguen pendientes.
+Later preparation: local build 7 has updated notices and source delivery;
+unchanged historical-package references below concern build 6, not this new candidate.
+
 ## ES / EN - Licencia del material propio / Original-material licence
 
 El titular aprobó el 04-11-2026 **GPL-3.0-only** para el código, documentación y

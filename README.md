@@ -137,7 +137,8 @@ Herramientas usadas en este equipo: Swift/Clang del SDK macOS 26.5, CMake y
 Ninja existentes. Target de despliegue 15.0. No se instalaron herramientas
 globales. Los modelos se copian desde su ubicación local; no se modifican.
 
-El runtime ARM64 procede del paquete oficial 1.31.1. El runtime x86_64 se
+El runtime ARM64 procede del paquete oficial 1.31.1 e identifica el commit
+`41d4d61f14b9c1dd0b2ccda1e9b85dd415fd0496`. El runtime x86_64 se
 compila desde `v1.31.1`, commit
 `6af1a932e2286d5c58166085d24c68783033edee`; configuración y hashes en
 `scripts/prepare-runtime.sh`. CMake descarga las dependencias fijadas
@@ -199,8 +200,13 @@ suites Swift públicas; sin opciones conserva el recorrido Swift completo dual.
 Las comparaciones numéricas y pruebas de paquete siguen siendo comprobaciones
 locales adicionales; algunas requieren NumPy y capturas CPU no distribuidas.
 
+Preparación de distribución y fuentes: [RELEASE.md](RELEASE.md). El candidato
+local 0.4.2 build 7 añade licencias y avisos; no cambia el procesamiento.
+
 El empaquetado permanece separado: `bash scripts/package.sh` necesita los modelos
-autorizados y se niega a reemplazar una app existente. Los avisos de derechos
+autorizados y se niega a reemplazar una app existente. Su destino predeterminado
+es `dist/Cauces-0.4.2-build7/Cauces.app`; la copia histórica build 6 se conserva.
+Incluye GPL, alcance, Apache y avisos completos de bibliotecas. Los avisos de derechos
 pendientes siguen aplicándose; estas pruebas no autorizan su redistribución.
 
 `tests/sandbox_probe.py <app> <WAV-sintético> [arm64|x86_64]` prepara una app de

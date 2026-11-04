@@ -1,5 +1,48 @@
 # Validación de Cauces
 
+## Preparación técnica 0.4.2 build 7 — 04-11-2026
+
+- Referencia funcional: 0.4.2 build 6, conservada con su ZIP original. Build 7
+  cambia únicamente infraestructura de distribución y número de build; no cambia
+  `src/`, pesos, modelos, runtime de cada arquitectura ni entitlements.
+- Build C++/Swift ARM64 y x86_64 desde un snapshot nuevo de fuentes, sin modelos
+  ni capturas privadas. Solo se copiaron dependencias de desarrollo fijadas.
+  Las fuentes no enlazan con el checkout original. Compilación PASS.
+- Pruebas públicas definitivas: 8/8 CTest por arquitectura, cinco suites Swift por
+  arquitectura, protocolo/FIFO y 100 WAV malformados más recuperación: PASS.
+  Contratos del runner (7), informes CTest (6), licencias (3), registros de build
+  (4) y fuentes de terceros (3): PASS. Se observaron fallos antes de implementar
+  los controles nuevos y el tratamiento de enlaces legítimos internos de upstream.
+- Integración local ARM64/x86_64: transporte, cancelación/reintento, 18 rechazos
+  individuales de assets por arquitectura, controles válidos y worker/exportación
+  PASS. Solo fixtures sintéticos autorizados; originales preservados.
+- Tras añadir los registros por arquitectura se recompilaron ambos recorridos;
+  los seis ejecutables/bibliotecas de entrega resultantes coinciden byte a byte
+  con los ya probados. Los registros verifican insumos antes/después del build,
+  outputs y huellas ORT revisadas antes de empaquetar. Rechazo de empaquetado sobre
+  una app existente comprobado sin modificar ninguno de sus archivos.
+- Bundle universal build 7: firma ad hoc, dependencias relativas, mínimo macOS 15,
+  hashes de modelos y 31 archivos de licencias/avisos comprobados. GPL, alcance,
+  Apache, originales ORT y atribuciones JSON/CPU adicionales incluidos. Las huellas
+  de sus 71 insumos de fuentes/licencias se contrastan al preparar la entrega.
+- Sondas del controller de producción con worker empaquetado en ambas
+  arquitecturas PASS: red EPERM en padre/hijo, inspect, separación, playback,
+  exportación de tres stems, cancelación y cierre. Export sintético: 48000 Hz,
+  2400 frames. El entry point de GUI se sustituye solo en una copia de prueba;
+  no se presenta como aceptación manual del selector o escucha profesional.
+- Revisión independiente: corregidos dos P2 de vinculación fuente/binario y
+  validación de fuentes externas; segunda revisión sin hallazgos importantes.
+  Los 12 árboles CPU y sus 20 avisos adicionales quedan registrados y verificados.
+- El binario ARM64 oficial identifica un commit distinto del Intel local. Se han
+  obtenido sus fuentes exactas; pins y avisos completos están inventariados. No
+  se dispone de un SBOM oficial que certifique inclusión exacta por componente
+  ARM64; los pins upstream se documentan como conjunto amplio, no como prueba de
+  enlace. No se ha sustituido el runtime para eliminar esta limitación.
+- Evidencia local excluida de Git: `evidence/release-preparation-20261104/`.
+  Artefactos locales y procedimiento de fuentes/descarga: [RELEASE.md](../RELEASE.md).
+  Quedan pendientes permisos de modelos, escucha, Intel físico, Pro Tools, GUI
+  manual y aceptación de Gatekeeper desde Internet. No se ha notarizado la app.
+
 ## Corrección de procedencia y metadatos — 04-11-2026
 
 - README, aviso fuente e inventario dejan de atribuir como autoría acreditada la

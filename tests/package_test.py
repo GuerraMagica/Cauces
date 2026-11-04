@@ -2,7 +2,8 @@ import hashlib,json,plistlib,re,subprocess,tempfile,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 from local_paths import FIXTURES
-APP=Path(sys.argv[1]) if len(sys.argv)>1 else ROOT/'dist/Cauces.app'
+source_info=plistlib.loads((ROOT/'resources/Info.plist').read_bytes())
+APP=Path(sys.argv[1]) if len(sys.argv)>1 else ROOT/('dist/Cauces-'+source_info['CFBundleShortVersionString']+'-build'+source_info['CFBundleVersion']+'/Cauces.app')
 def main():
     info=plistlib.loads((APP/'Contents/Info.plist').read_bytes());assert info['LSMinimumSystemVersion']=='15.0'
     for path in (APP/'Contents/MacOS/Cauces',APP/'Contents/MacOS/dialogue-worker',*list((APP/'Contents/Frameworks').glob('*.dylib'))):
@@ -34,5 +35,20 @@ def main():
         assert not any(entitlements.get(key) for key in ['com.apple.security.network.client','com.apple.security.network.server','com.apple.security.cs.allow-dyld-environment-variables','com.apple.security.get-task-allow'])
         signature=subprocess.check_output(['codesign','-dvv',str(path)],stderr=subprocess.STDOUT,text=True)
         assert 'runtime' in signature
-    print('Universal self-contained signed package passed')
+    licences=APP/'Contents/Resources/Licenses'
+    for name in ['GPL-3.0-only.txt','Apache-2.0.txt','COPYRIGHT','LICENSE_SCOPE.md',
+                 'ONNXRuntime-LICENSE','ONNXRuntime-ThirdPartyNotices.txt',
+                 'nlohmann-json-LICENSE','nlohmann-json-HEADER-NOTICES.txt',
+                 'Model-NOTICE.txt','dependency-inventory.json','SOURCE_INFORMATION.md']:
+        assert (licences/name).is_file(),name
+    assert (licences/'GPL-3.0-only.txt').read_bytes()==(ROOT/'LICENSE').read_bytes()
+    assert (licences/'Apache-2.0.txt').read_bytes()==(ROOT/'docs/commercial/licenses/Apache-2.0.txt').read_bytes()
+    assert (APP/'Contents/Resources/SOURCE_INPUTS.json').is_file()
+    inventory=json.loads((licences/'dependency-inventory.json').read_text())
+    assert inventory['json']['version']=='3.11.3'
+    assert manifest['integration']['onnx_conversion_author'] is None
+    assert manifest['integration']['refiner_author'] is None
+    assert manifest['integration']['base_model_licence_declared']=='Apache-2.0'
+    assert manifest['integration']['refiner_licence_status']=='not_determined'
+    print('Universal self-contained signed package and scoped licence material passed')
 if __name__=='__main__':main()

@@ -17,6 +17,17 @@ choices in this dossier. Draft sales terms do not make GPL rights conditional on
 purchase or seat limits. Model/weight permissions remain separately documented;
 no app or dossier PDF/ZIP was rebuilt.
 
+## Preparación técnica posterior / Later technical preparation - 2026-11-04
+
+El candidato local 0.4.2 build 7 incorpora los avisos y controles descritos en
+[RELEASE.md](../../RELEASE.md). El paquete histórico build 6 y el PDF/ZIP de este
+dossier se conservan sin cambios. La preparación técnica no resuelve los permisos
+pendientes de modelos ni constituye una autorización comercial.
+
+Local candidate 0.4.2 build 7 adds the notices/checks described in RELEASE.md.
+Historical build 6 and this dossier's PDF/ZIP remain unchanged. Technical
+preparation does not resolve model rights or constitute commercial approval.
+
 ## ES - Cómo utilizar este dossier
 
 Paquete bilingüe de preparación para una posible venta de Cauces. La referencia

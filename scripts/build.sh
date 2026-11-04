@@ -10,6 +10,7 @@ for task_arch in "${@:-arm64 x86_64}"; do
       *) echo "Arquitectura no válida: $task_target" >&2; exit 1 ;;
     esac
     test -f "$runtime_lib" || { echo "Falta ONNX Runtime $task_target; consulta README.md" >&2; exit 1; }
+    /usr/bin/python3 scripts/build_receipt.py begin "$task_target"
     cmake -S . -B "build/$task_target" -G Ninja -DCMAKE_BUILD_TYPE=Release \
       "-DCMAKE_OSX_ARCHITECTURES=$task_target" -DCMAKE_OSX_DEPLOYMENT_TARGET=15.0 "-DORT_LIBRARY=$runtime_lib" "-DORT_ROOT=$project_dir/vendor/onnxruntime-osx-arm64-1.31.1"
     cmake --build "build/$task_target" --parallel 2
@@ -18,5 +19,6 @@ for task_arch in "${@:-arm64 x86_64}"; do
       src/App.swift src/AudioOutput.swift src/AudioSettingsView.swift src/CaucesStyle.swift src/AppMessages.swift src/JobState.swift src/JobController.swift src/WorkerConnection.swift src/PreviewPlayer.swift src/PrivateDirectory.swift src/LocalFilePolicy.swift \
       -import-objc-header src/security.h "build/$task_target/libcauces_security.a" -lc++ \
       -o "build/$task_target/Cauces"
+    /usr/bin/python3 scripts/build_receipt.py record "$task_target"
   done
 done

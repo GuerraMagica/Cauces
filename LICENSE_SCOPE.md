@@ -16,7 +16,7 @@ está en [LICENSE](LICENSE). Se elige la versión 3, sin la cláusula «o poster
 | Documentación propia, incluidos los borradores del dossier | GPL-3.0-only; los borradores no se convierten por ello en contratos vigentes |
 | Artwork propio de `design/cauces-v1/`, iconos y gráficos de `resources/` | GPL-3.0-only; los SVG y herramientas de generación disponibles se conservan como fuentes editables |
 | Bibliotecas y otros componentes de terceros | Sus propias licencias y avisos; esta concesión no los relicencia |
-| Textos de licencia reproducidos en `LICENSE`, `docs/commercial/licenses/` y el certificado `DCO` | Se conservan con sus condiciones originales de reproducción |
+| Textos de licencia reproducidos en `LICENSE`, `docs/commercial/licenses/`, `docs/release/licenses/` y el certificado `DCO` | Se conservan con sus condiciones originales de reproducción |
 | Modelos, conversiones ONNX, refinador, pesos y tensores externos | Excluidos de esta concesión; consultar [Licencias y procedencia](docs/commercial/LICENSES_PROVENANCE.md) |
 | Audio, capturas de investigación y paquetes locales no versionados | Excluidos de esta publicación y de esta concesión |
 
@@ -58,7 +58,7 @@ Available SVG sources and generation tools remain editable. Licensing draft
 documents does not turn them into effective contracts.
 
 Third-party components retain their licences. Reproduced texts in
-`LICENSE`, `docs/commercial/licenses/` and the `DCO` certificate retain their original
+`LICENSE`, `docs/commercial/licenses/`, `docs/release/licenses/` and the `DCO` certificate retain their original
 reproduction terms. Models, ONNX conversions, the refiner, weights and external
 tensors are excluded from this grant; see
 [Licensing and provenance](docs/commercial/LICENSES_PROVENANCE.md).
