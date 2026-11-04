@@ -12,3 +12,31 @@ The upstream model card identifies Apache-2.0. A checkpoint fingerprint does not
 prove tensor-by-tensor equivalence of the ONNX conversion or establish rights to
 third-party assets. Their licenses and notices continue to apply.
 Asset fingerprints remain in Models/manifest.json and are verified before use.
+
+Provisional high-frequency refiner notice (2026-11-04)
+
+Immediate provenance: local Cauces 0.4.2 distribution, GuerraMagica Audio.
+Declared refiner authorship: GuerraMagica, according to the project owner's
+declaration dated 2026-11-02. Documentary evidence of the underlying weights'
+authorship, ownership and redistribution rights remains pending.
+
+Assets concerned: refiner.onnx and the 13 external tensors it references in
+weights.bin. That file also contains separator data and is not attributed wholly
+to the refiner. The refiner performs spectral refinement using the mixture and
+separation guides.
+
+SHA-256 of refiner.onnx:
+4d4d38f4ca538924118b79daf5e24f293fec6f04e5a6eca2aa36e04c8f23f9cb
+SHA-256 of the complete weights.bin file:
+b1491a04c97baaa30ebecfc7290fc70daa9404774ace4495065f5243b4188889
+
+Applicable asset licence: undetermined from the documentation examined. The
+MossFormer2 base-model licence is not presumed to cover this refiner.
+Redistribution permission: pending evidence of an applicable licence or
+authorisation. This notice grants no redistribution rights. A future project-wide
+licence must not be interpreted as licensing these assets unless their inclusion
+and scope are expressly established. Their inclusion in a public distribution
+remains pending resolution and documentation of these rights.
+
+This source notice is updated for future packaging. The existing Cauces 0.4.2
+package and its historical notice have not been changed.

@@ -162,6 +162,14 @@ proyecto no entrena ni recrea los pesos del modelo. Tampoco concede derechos
 de redistribución sobre modelos o bibliotecas de terceros; sus dependencias
 conservan sus propias licencias y avisos.
 
+El refinador y sus tensores externos en `weights.bin` tienen un
+[aviso provisional de procedencia y derechos](docs/commercial/LICENSES_PROVENANCE.md#es---refinador-de-alta-frecuencia-de-cauces).
+Se conserva la autoría declarada por GuerraMagica; la titularidad de los pesos,
+su licencia aplicable y el permiso de redistribución están pendientes de
+acreditación documental. La licencia del modelo base no se extiende por
+presunción al refinador. El aviso fuente se ha actualizado para futuros
+empaquetados; el paquete 0.4.2 existente permanece intacto.
+
 ## Privacidad y seguridad
 
 La app y su worker se firman con App Sandbox y sin permisos de red entrante ni
