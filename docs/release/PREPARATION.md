@@ -22,11 +22,11 @@ información pública de dependencias se respaldan en GitHub. No se fusiona main
   integración con fixtures sintéticos y assets locales autorizados.
 - [x] Empaquetar en destino nuevo y comprobar arquitecturas, firmas ad hoc,
   ausencia de red, modelos, licencias, exportación y extracción en otro destino.
-- [ ] Generar fuentes propias y fuentes de terceros identificadas, ZIP, manifiesto
+- [x] Generar fuentes propias y fuentes de terceros identificadas, ZIP, manifiesto
   y SHA-256. Probar transferencia local del candidato y descarga pública de las
   fuentes después del push; no subir modelos ni presentar la prueba local como
   aceptación de Gatekeeper desde Internet.
-- [ ] Revisión independiente final, commit/push y comparación SHA remoto/local.
+- [x] Revisión independiente final, commit/push y comparación SHA remoto/local.
 
 ## Hallazgos y decisiones
 
@@ -60,3 +60,23 @@ de dependencias CPU y sus huellas. Las fuentes ORT proceden del archivo ARM64
 upstream con SHA-256 verificado y de git archive del commit Intel fijado.
 Los enlaces relativos internos legítimos de upstream se conservan; se rechazan
 los enlaces de fuentes absolutos o que escapen del árbol.
+
+## Resultado de la entrega
+
+Fuentes funcionales del candidato: commit `605cc735348238f3f06fc735a6ffe126f8533d70`,
+respaldado en GitHub y confirmado por SHA remoto. La actualización posterior de
+este registro no cambia las fuentes funcionales ni los archivos de entrega.
+
+Entrega local: `dist/Cauces-0.4.2-build7-delivery/`, con ZIP universal, fuentes
+propias, fuentes de terceros, manifiesto, verificación y SHA256SUMS. Checksums y
+contenido de los archivos de fuentes verificados: 218 archivos del proyecto,
+archivo upstream ARM64 exacto, git archive del commit Intel y los 12 árboles CPU.
+Descarga pública real de las fuentes desde GitHub: PASS, 218 archivos idénticos.
+Transferencia HTTP de la app exclusivamente en loopback y extracción a destino
+nuevo: PASS, 49 archivos del bundle idénticos; firma/dependencias/licencias del
+bundle trasladado verificadas. No equivale a probar Gatekeeper desde Internet.
+
+Los binarios completos y las fuentes externas permanecen locales; GitHub recibe
+código, avisos y documentación. No se han subido modelos, audio o paquetes, ni se
+ha creado una release o fusionado main. La limitación de granularidad del SBOM
+ARM64 y las validaciones manuales/derechos pendientes están documentadas.

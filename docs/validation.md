@@ -38,6 +38,12 @@
   se dispone de un SBOM oficial que certifique inclusión exacta por componente
   ARM64; los pins upstream se documentan como conjunto amplio, no como prueba de
   enlace. No se ha sustituido el runtime para eliminar esta limitación.
+- Archivos de entrega generados desde `605cc73`: checksums de ZIP, fuentes y
+  manifiesto PASS. Archivo de fuentes propias y descarga pública desde GitHub:
+  218 archivos idénticos al commit. Fuentes externas entregadas: archivo upstream
+  ARM64 exacto, git archive del commit Intel y 12 árboles CPU contrastados por
+  contenido y enlaces internos. Transferencia HTTP local y extracción del ZIP:
+  49 archivos del bundle idénticos; controles del paquete trasladado PASS.
 - Evidencia local excluida de Git: `evidence/release-preparation-20261104/`.
   Artefactos locales y procedimiento de fuentes/descarga: [RELEASE.md](../RELEASE.md).
   Quedan pendientes permisos de modelos, escucha, Intel físico, Pro Tools, GUI
