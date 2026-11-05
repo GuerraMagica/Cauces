@@ -1,5 +1,24 @@
 # Validación de Cauces
 
+## Sondas de desarrollo: contención de bundles — 05-11-2026
+
+- Corregida la ruta `Info.plist/CFBundleExecutable` → `unlink` en las dos sondas.
+  El helper compartido exige `Cauces`, directorios/archivos regulares y ningún
+  symlink; copia sin seguir enlaces y vuelve a validar antes de toda mutación.
+- Repro original en fixtures desechables: rutas absolutas/traversal podían borrar
+  un centinela externo. Tras el fix, 6 tests con 62 escenarios pasan: nombres y
+  tipos inválidos, enlaces en componentes/destinos, cambio durante la copia,
+  XML/plist binario, controles legítimos ARM64/x86_64 y opciones de output.
+  Los entry points reales se detienen antes de compilación, firma o ejecución.
+- `bash tests/run_public_tests.sh all`: PASS; 8/8 CTest, cinco suites Swift,
+  protocolo y 100 WAV malformados por arquitectura, más las regresiones Python.
+  La prueba sandbox-exec se ejecutó fuera del sandbox de Codex, sin cambiar
+  protecciones del sistema. Validación de estructura de los bundles build 6 y 7 PASS.
+- Revisión independiente del parche: sin bypass/regresión concretos. No se ha
+  probado una app maliciosa ejecutándola ni se han tocado dispositivos de audio.
+  Los modelos, DSP, app y ZIP existentes no cambian. La confianza en el código del
+  paquete y la concurrencia deliberada del mismo UID siguen fuera de este helper.
+
 ## Pruebas públicas reproducibles — 04-11-2026
 
 - Nuevo `tests/run_public_tests.sh [arm64|x86_64|all]`, con arquitectura actual

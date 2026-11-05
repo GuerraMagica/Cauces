@@ -11,6 +11,7 @@ cauces_test_tools ctest xcrun lipo
 for task_arch in $task_arches; do cauces_test_execution_arch "$task_arch"; done
 /usr/bin/python3 tests/test_runner_tests.py
 /usr/bin/python3 tests/ctest_report_tests.py
+/usr/bin/python3 tests/probe_bundle_tests.py
 for task_arch in $task_arches; do
   echo "Public tests: $task_arch (no model or reference-fixture assets)"
   task_report="$PWD/build/$task_arch/public-ctest.xml"

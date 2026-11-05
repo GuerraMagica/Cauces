@@ -3,8 +3,9 @@
 No NSOpenPanel automation: source/destination are inside the test bundle/container.
 GUI user-selected file grants need a separate manual/UI acceptance test.
 """
-import json,os,plistlib,subprocess,sys,tempfile
+import json,os,subprocess,sys,tempfile
 from pathlib import Path
+from probe_bundle import prepare_probe_copy
 ROOT=Path(__file__).resolve().parents[1]
 app=Path(sys.argv[1]).resolve()
 source=Path(sys.argv[2]).resolve()
@@ -12,11 +13,7 @@ architecture=sys.argv[3] if len(sys.argv)>3 else 'arm64'
 assert architecture in ('arm64','x86_64')
 folder=Path(tempfile.mkdtemp(prefix='sandbox-probe-',dir=ROOT/'build'))
 probe=folder/'CaucesAudit.app'
-subprocess.run(['cp','-cR',str(app),str(probe)],check=True)
-info=plistlib.loads((probe/'Contents/Info.plist').read_bytes())
-(probe/'Contents/MacOS'/info['CFBundleExecutable']).unlink()  # test copy only; production app is untouched
-info.update(CFBundleIdentifier='local.julio.cauces.audit',CFBundleExecutable='CaucesAudit')
-(probe/'Contents/Info.plist').write_bytes(plistlib.dumps(info))
+prepare_probe_copy(app,probe,'local.julio.cauces.audit','CaucesAudit')
 subprocess.run(['cp','-c',str(source),str(probe/'Contents/Resources/audit-input.wav')],check=True)
 sources=['AudioOutput','AppMessages','JobState','JobController','PreviewPlayer','WorkerConnection','PrivateDirectory','LocalFilePolicy']
 command=['xcrun','swiftc','-swift-version','5','-O','-target',f'{architecture}-apple-macos15.0','-module-cache-path',str(ROOT/'build/swift-cache'),'-import-objc-header',str(ROOT/'src/security.h')]
