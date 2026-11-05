@@ -208,6 +208,14 @@ prueba firmada, usa el controller de producción y el worker empaquetado, compru
 EPERM en padre/hijo y recorre separación, escucha, exportación y cierre. No se
 incluye esa sonda en la app entregada ni sustituye probar los selectores de GUI.
 
+Esta sonda y `tests/output_settings_probe.py` validan la estructura antes de
+modificar una copia: exigen el ejecutable `Cauces`, archivos/directorios normales
+y ausencia de symlinks, y repiten la validación después de copiar. Usa únicamente
+paquetes propios de procedencia autenticada: estas herramientas después firman
+y ejecutan código del paquete. La validación estructural no certifica ese código
+ni aísla frente a un escritor concurrente del mismo usuario. Las regresiones de
+esta frontera están en `tests/probe_bundle_tests.py` y en el recorrido público.
+
 Para ejecutar el test de estado sin iniciar una app:
 
 ```sh

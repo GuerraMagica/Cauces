@@ -1,17 +1,14 @@
 """Run production settings/player in a signed sandboxed test copy; never shipped."""
-import json,plistlib,subprocess,sys,tempfile
+import json,subprocess,sys,tempfile
 from pathlib import Path
+from probe_bundle import prepare_probe_copy
 ROOT=Path(__file__).resolve().parents[1]
 app=Path(sys.argv[1]).resolve()
 arch=sys.argv[2] if len(sys.argv)>2 else 'arm64'
 assert arch in ('arm64','x86_64')
 folder=Path(tempfile.mkdtemp(prefix='output-settings-probe-',dir=ROOT/'build'))
 probe=folder/'CaucesOutputAudit.app'
-subprocess.run(['cp','-cR',str(app),str(probe)],check=True)
-info=plistlib.loads((probe/'Contents/Info.plist').read_bytes())
-(probe/'Contents/MacOS'/info['CFBundleExecutable']).unlink()
-info.update(CFBundleIdentifier='local.julio.cauces.outputaudit',CFBundleExecutable='CaucesOutputAudit')
-(probe/'Contents/Info.plist').write_bytes(plistlib.dumps(info))
+prepare_probe_copy(app,probe,'local.julio.cauces.outputaudit','CaucesOutputAudit')
 subprocess.run(['cp','-c',str(ROOT/('build/performance-fixtures/settings-44k1.wav' if '--source-44k1' in sys.argv else 'build/performance-fixtures/benchmark-8s.wav')),str(probe/'Contents/Resources/audit-input.wav')],check=True)
 subprocess.run(['xcrun','swiftc','-swift-version','5','-g','-target',f'{arch}-apple-macos15.0','-module-cache-path',str(ROOT/'build/swift-cache'),str(ROOT/'src/AudioOutput.swift'),str(ROOT/'src/PreviewPlayer.swift'),str(ROOT/'tests/OutputSettingsProbe.swift'),'-o',str(probe/'Contents/MacOS/CaucesOutputAudit')],check=True)
 subprocess.run(['codesign','--force','--sign','-','--options','runtime','--entitlements',str(ROOT/'resources/Cauces.entitlements'),str(probe)],check=True)
